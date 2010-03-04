@@ -7,7 +7,7 @@ set( kupnpserver_LIB_SRCS
   soapagent.cpp
   icon.cpp
   service.cpp
-  device.cpp
+  rootdevice.cpp
   ssdpwatcher.cpp
 )
 

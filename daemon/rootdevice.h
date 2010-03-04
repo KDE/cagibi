@@ -20,8 +20,8 @@
     License along with this library. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DEVICE_H
-#define DEVICE_H
+#ifndef ROOTDEVICE_H
+#define ROOTDEVICE_H
 
 // lib
 #include "icon.h"
@@ -41,14 +41,14 @@ class Service;
 class SoapAgent;
 
 
-class Device : public QObject
+class RootDevice : public QObject
 {
   Q_OBJECT
 
   public:
-    Device( const QString& name, const KUrl& location, const QString& uuid );
+    RootDevice( const QString& name, const KUrl& location, const QString& uuid );
 
-    virtual ~Device();
+    virtual ~RootDevice();
 
   public:
     const QString& name() const;
@@ -65,10 +65,7 @@ class Device : public QObject
     DeviceDescription& description();
 
   Q_SIGNALS:
-    void descriptionDownloadDone( Device* device, bool success );
-
-  protected:
-    KJob* sendSoapCommand( const QString& query, const QString& soapact, const QString& controlurl );
+    void descriptionDownloadDone( RootDevice* device, bool success );
 
   protected Q_SLOTS:
     void onDescriptionDownloadDone( KJob* job );
@@ -89,13 +86,13 @@ class Device : public QObject
 };
 
 
-inline const QString& Device::name() const { return mName; }
-inline const QString& Device::uuid() const { return mUuid; }
-inline const KUrl& Device::location() const { return mLocation; }
-inline const DeviceDescription& Device::description() const { return mDescription; }
-inline const QString& Device::lastError() const { return mError; }
+inline const QString& RootDevice::name() const { return mName; }
+inline const QString& RootDevice::uuid() const { return mUuid; }
+inline const KUrl& RootDevice::location() const { return mLocation; }
+inline const DeviceDescription& RootDevice::description() const { return mDescription; }
+inline const QString& RootDevice::lastError() const { return mError; }
 
-inline DeviceDescription& Device::description() { return mDescription; }
+inline DeviceDescription& RootDevice::description() { return mDescription; }
 
 }
 

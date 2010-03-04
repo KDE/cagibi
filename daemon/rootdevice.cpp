@@ -20,7 +20,7 @@
     License along with this library. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "device.h"
+#include "rootdevice.h"
 
 // server
 #include "soapagent.h"
@@ -35,7 +35,7 @@
 namespace UPnP
 {
 
-static bool parseDescription( Device* device, const QByteArray& data, QString* error )
+static bool parseDescription( RootDevice* device, const QByteArray& data, QString* error )
 {
     bool result = true;
 
@@ -55,7 +55,7 @@ static bool parseDescription( Device* device, const QByteArray& data, QString* e
 }
 
 
-Device::Device( const QString& name, const KUrl& location, const QString& uuid )
+RootDevice::RootDevice( const QString& name, const KUrl& location, const QString& uuid )
   : mName( name ),
     mLocation( location ),
     mUuid( uuid ),
@@ -66,13 +66,13 @@ Device::Device( const QString& name, const KUrl& location, const QString& uuid )
 
 }
 
-void Device::addIcon( const Icon& icon )
+void RootDevice::addIcon( const Icon& icon )
 {
 kDebug()<<icon.url()<<icon.width()<<"x"<<icon.height();
     mIcons.append( icon );
 }
 
-void Device::addService( const Service& service )
+void RootDevice::addService( const Service& service )
 {
     const QString& type = service.type();
     const QString actionId =  QString::fromLatin1( "GetStatusInfo" );
@@ -82,7 +82,7 @@ kDebug()<<type<<url;
 }
 
 
-void Device::startDescriptionDownload()
+void RootDevice::startDescriptionDownload()
 {
 kDebug() << "Downloading description from " << mLocation.prettyUrl();
 
@@ -92,7 +92,7 @@ kDebug() << "Downloading description from " << mLocation.prettyUrl();
     connect( job, SIGNAL(result( KJob* )), SLOT(onDescriptionDownloadDone( KJob* )) );
 }
 
-void Device::onDescriptionDownloadDone( KJob* job )
+void RootDevice::onDescriptionDownloadDone( KJob* job )
 {
     if( job->error() )
     {
@@ -109,7 +109,7 @@ kDebug()<< QString::fromAscii(storedTransferJob->data());
 }
 
 
-void Device::onSoapReplyReceived( const QByteArray& reply, const QVariant& data )
+void RootDevice::onSoapReplyReceived( const QByteArray& reply, const QVariant& data )
 {
     const bool isError = reply.isEmpty();
     if( isError )
@@ -131,6 +131,6 @@ kDebug() << "Service added: " << service.type();
 }
 
 
-Device::~Device() {}
+RootDevice::~RootDevice() {}
 
 }
