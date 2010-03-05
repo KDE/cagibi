@@ -75,6 +75,8 @@ class DeviceDescriptionXMLHandler : public QXmlDefaultHandler
     Service mCurrentService;
     Device mCurrentDevice;
 
+    Device mParentDevice;
+
     QString mCharacterData;
     QStack<Element> mStatusStack;
 };

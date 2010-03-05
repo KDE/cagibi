@@ -56,12 +56,20 @@ QString Device::presentationUrl() const { return d->presentationUrl(); }
 
 QList<Icon> Device::icons() const { return d->icons(); }
 QList<Service> Device::services() const { return d->services(); }
+QList<Device> Device::devices() const { return d->devices(); }
+
+bool Device::hasParentDevice() const { return d->hasParentDevice(); }
+Device Device::parentDevice() const { return d->parentDevice(); }
 
 void Device::setProperty( const QString& key, const QString& value )
 {
     d->setProperty( key, value );
 };
 
+void Device::addDevice( const Device& device )
+{
+    d->addDevice( device );
+}
 void Device::addService( const Service& service )
 {
     d->addService( service );

@@ -62,6 +62,7 @@ kDebug()<<type<<url;
 void DevicePrivate::addDevice( const Device& device )
 {
 kDebug()<<device.friendlyName();
+    device.d.data()->setParentDevicePrivate( this );
     mDevices.append( device );
 }
 

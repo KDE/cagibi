@@ -39,6 +39,8 @@ class Service;
 
 class Device
 {
+  friend class DevicePrivate;
+
   public:
     static bool isKey( const QString& key );
 
@@ -68,9 +70,15 @@ class Device
 
     QList<Icon> icons() const;
     QList<Service> services() const;
+    QList<Device> devices() const;
+
+    bool hasParentDevice() const;
+    Device parentDevice() const;
 
   public:
     void setProperty( const QString& key, const QString& value );
+
+    void addDevice( const Device& device );
     void addService( const Service& service );
     void addIcon( const Icon& icon );
 

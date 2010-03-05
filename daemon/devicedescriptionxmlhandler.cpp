@@ -118,7 +118,11 @@ bool DeviceDescriptionXMLHandler::startElement( const QString& namespaceURI, con
         break;
     case DeviceListElement:
         if( localName == QLatin1String("device") )
+        {
             mStatusStack.push( DeviceElement );
+            mParentDevice = mCurrentDevice;
+            mCurrentDevice = Device();
+        }
         else
             mStatusStack.push( UnknownElement );
         break;
@@ -160,8 +164,14 @@ bool DeviceDescriptionXMLHandler::endElement( const QString& namespaceURI, const
         mCurrentService = Service();
         break;
     case DeviceElement:
-//         mRootDevice->addDevice( mCurrentDevice );
-        mCurrentDevice = Device();
+        if( mStatusStack.top() == RootElement )
+            mRootDevice->setDevice( mCurrentDevice );
+        else
+        {
+            mParentDevice.addDevice( mCurrentDevice );
+            mCurrentDevice = mParentDevice;
+            mParentDevice = mParentDevice.parentDevice();
+        }
         break;
     case UrlBaseElement:
         mRootDevice->setBaseUrl( mCharacterData );

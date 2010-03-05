@@ -44,6 +44,9 @@ class DevicePrivate : public QSharedData
     static bool isKey( const QString& key );
 
   public:
+    DevicePrivate();
+
+  public:
     const QString& friendlyName() const;
     const QString& manufacturerName() const;
 //     const QString& manufacturerUrl() const;
@@ -59,8 +62,12 @@ class DevicePrivate : public QSharedData
     const QList<Service>& services() const;
     const QList<Device>& devices() const;
 
+    bool hasParentDevice() const;
+    Device parentDevice() const;
+
   public:
     void setProperty( const QString& key, const QString& value );
+    void setParentDevicePrivate( DevicePrivate* parentDevicePrivate );
 
     void addDevice( const Device& device );
     void addService( const Service& service );
@@ -83,9 +90,12 @@ class DevicePrivate : public QSharedData
     QList<Icon> mIcons;
     QList<Service> mServices;
     QList<Device> mDevices;
+
+    DevicePrivate* mParentDevicePrivate;
 };
 
 
+inline DevicePrivate::DevicePrivate() : mParentDevicePrivate( 0 ) {}
 inline const QString& DevicePrivate::friendlyName() const { return mFriendlyName; }
 inline const QString& DevicePrivate::manufacturerName() const { return mManufacturerName; }
 inline const QString& DevicePrivate::modelDescription() const { return mModelDescription; }
@@ -97,6 +107,11 @@ inline const QString& DevicePrivate::presentationUrl() const { return mPresentat
 inline const QList<Icon>& DevicePrivate::icons() const { return mIcons; }
 inline const QList<Service>& DevicePrivate::services() const { return mServices; }
 inline const QList<Device>& DevicePrivate::devices() const { return mDevices; }
+inline bool DevicePrivate::hasParentDevice() const { return (mParentDevicePrivate != 0); }
+inline Device DevicePrivate::parentDevice() const
+{
+    return mParentDevicePrivate ? Device(mParentDevicePrivate) : Device();
+}
 
 inline void DevicePrivate::setProperty( const QString& key, const QString& value )
 {
@@ -117,6 +132,11 @@ inline void DevicePrivate::setProperty( const QString& key, const QString& value
     else if( key == keys[PresentationUrl] )
         mPresentationUrl == value;
 }
+inline void DevicePrivate::setParentDevicePrivate( DevicePrivate* parentDevicePrivate )
+{
+    mParentDevicePrivate = parentDevicePrivate;
+}
+
 
 inline bool DevicePrivate::isKey( const QString& key )
 {

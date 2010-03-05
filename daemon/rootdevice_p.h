@@ -57,6 +57,7 @@ class RootDevicePrivate
   public:
     void startDescriptionDownload();
     void setBaseUrl( const QString& baseUrl );
+    void setDevice( const Device& device );
 
   public: // slots
     void onDescriptionDownloadDone( KJob* job );
@@ -99,6 +100,7 @@ inline const Device& RootDevicePrivate::device() const { return mDevice; }
 inline const QString& RootDevicePrivate::lastError() const { return mError; }
 
 inline void RootDevicePrivate::setBaseUrl( const QString& baseUrl ) { mBaseUrl = baseUrl; }
+inline void RootDevicePrivate::setDevice( const Device& device ) { mDevice = device; }
 
 }
 

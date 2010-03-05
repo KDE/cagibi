@@ -60,6 +60,7 @@ class RootDevice : public QObject
   public:
     void startDescriptionDownload();
     void setBaseUrl( const QString& baseUrl );
+    void setDevice( const Device& device );
 
   Q_SIGNALS:
     void descriptionDownloadDone( RootDevice* device, bool success );

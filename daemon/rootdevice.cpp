@@ -49,6 +49,10 @@ void RootDevice::setBaseUrl( const QString& baseUrl )
 {
     d->setBaseUrl( baseUrl );
 }
+void RootDevice::setDevice( const Device& device )
+{
+    d->setDevice( device );
+}
 
 RootDevice::~RootDevice()
 {
