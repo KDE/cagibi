@@ -1,7 +1,7 @@
 /*
     This file is part of the KUPnP library, part of the KDE project.
 
-    Copyright 2009 Friedrich W. H. Kossebau <kossebau@kde.org>
+    Copyright 2009-2010 Friedrich W. H. Kossebau <kossebau@kde.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -60,8 +60,8 @@ class SSDPWatcher : public QObject
     RootDevice* createDeviceFromResponse( const QByteArray& response );
 
   protected Q_SLOTS:
-    void onReadyRead();
-    void onError( QAbstractSocket::SocketError error );
+    void onUdpSocketReadyRead();
+    void onUdpSocketError( QAbstractSocket::SocketError error );
     void onDescriptionDownloadDone( RootDevice* device, bool success );
 
   protected:

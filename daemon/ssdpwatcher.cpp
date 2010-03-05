@@ -87,8 +87,10 @@ kDebug() << "Failed to leave multicast group 239.255.255.250";
 SSDPWatcher::SSDPWatcher()
   : mUdpSocket( new QUdpSocket(this) )
 {
-    connect( mUdpSocket, SIGNAL(readyRead()), SLOT(onReadyRead()) );
-    connect( mUdpSocket, SIGNAL(error( QAbstractSocket::SocketError )), SLOT(onError( QAbstractSocket::SocketError )) );
+    connect( mUdpSocket, SIGNAL(readyRead()),
+             SLOT(onUdpSocketReadyRead()) );
+    connect( mUdpSocket, SIGNAL(error( QAbstractSocket::SocketError )),
+             SLOT(onUdpSocketError( QAbstractSocket::SocketError )) );
 
     // try up to ten port numbers TODO: make configurable
     for( int i = 0; i < 10; ++i )
@@ -112,8 +114,8 @@ kDebug() << "Trying to find UPnP devices on the local network";
     const char mSearchMessage[] =
         "M-SEARCH * HTTP/1.1\r\n"
         "HOST: 239.255.255.250:1900\r\n"
-//         "ST:urn:schemas-upnp-org:device:upnp:rootdevice:1\r\n"
-        "ST:urn:schemas-upnp-org:device:InternetGatewayDevice:1\r\n"
+        "ST:urn:schemas-upnp-org:device:upnp:rootdevice:1\r\n"
+//         "ST:urn:schemas-upnp-org:device:InternetGatewayDevice:1\r\n"
 //         "ST:urn:schemas-upnp-org:device:WANDevice:1\r\n"
         "MAN:\"ssdp:discover\"\r\n"
         "MX:3\r\n"
@@ -237,6 +239,7 @@ kDebug() << "Detected Device:" << server << "UUID" << uuid;
 void SSDPWatcher::onDescriptionDownloadDone( RootDevice* device, bool success )
 {
     mPendingDevices.remove( device );
+
     if( ! success )
         device->deleteLater();
     else if( mDevices.contains(device->uuid()) )
@@ -249,17 +252,17 @@ kDebug()<< "Added:"<<device->name()<<device->uuid();
     }
 }
 
-void SSDPWatcher::onReadyRead()
+void SSDPWatcher::onUdpSocketReadyRead()
 {
     const int pendingDatagramSize = mUdpSocket->pendingDatagramSize();
 
-    QByteArray data( pendingDatagramSize, 0 );
-    const int bytesRead = mUdpSocket->readDatagram( data.data(), pendingDatagramSize );
+    QByteArray response( pendingDatagramSize, 0 );
+    const int bytesRead = mUdpSocket->readDatagram( response.data(), pendingDatagramSize );
     if( bytesRead == -1 )
         // TODO: error handling
         return;
 
-    RootDevice* device = createDeviceFromResponse( data );
+    RootDevice* device = createDeviceFromResponse( response );
     if( device )
     {
         connect( device, SIGNAL(descriptionDownloadDone( RootDevice*, bool )),
@@ -271,7 +274,7 @@ void SSDPWatcher::onReadyRead()
 }
 
 
-void SSDPWatcher::onError( QAbstractSocket::SocketError error )
+void SSDPWatcher::onUdpSocketError( QAbstractSocket::SocketError error )
 {
     Q_UNUSED( error );
 kDebug() << "SSDPWatcher Error : " << mUdpSocket->errorString();
