@@ -66,17 +66,20 @@ kDebug() << "Downloading description from " << mLocation.prettyUrl();
 
 void RootDevicePrivate::onDescriptionDownloadDone( KJob* job )
 {
+    bool success;
+
     if( job->error() )
     {
         mError = i18n( "Failed to download from \"%1\": %2", mLocation.prettyUrl(), job->errorString() );
 kDebug() << mError;
-        return;
+        success = false;
     }
-
-    KIO::StoredTransferJob* storedTransferJob = static_cast<KIO::StoredTransferJob*>( job );
+    else
+    {
+        KIO::StoredTransferJob* storedTransferJob = static_cast<KIO::StoredTransferJob*>( job );
 kDebug()<< QString::fromAscii(storedTransferJob->data());
-    const bool success = parseDescription( p, storedTransferJob->data(), &mError );
-
+        success = parseDescription( p, storedTransferJob->data(), &mError );
+    }
     emit p->descriptionDownloadDone( p, success );
 }
 
