@@ -34,8 +34,7 @@ namespace UPnP
 {
 
 DeviceDescriptionXMLHandler::DeviceDescriptionXMLHandler( RootDevice* device )
-  : mRootDevice( device ),
-    mCurrentDevice( device->device() )
+  : mRootDevice( device )
 {
 }
 
@@ -120,7 +119,7 @@ bool DeviceDescriptionXMLHandler::startElement( const QString& namespaceURI, con
         if( localName == QLatin1String("device") )
         {
             mStatusStack.push( DeviceElement );
-            mParentDevice = mCurrentDevice;
+            mDeviceStack.push( mCurrentDevice );
             mCurrentDevice = Device();
         }
         else
@@ -165,12 +164,15 @@ bool DeviceDescriptionXMLHandler::endElement( const QString& namespaceURI, const
         break;
     case DeviceElement:
         if( mStatusStack.top() == RootElement )
+        {
+kDebug()<<mCurrentDevice.friendlyName();
             mRootDevice->setDevice( mCurrentDevice );
+        }
         else
         {
-            mParentDevice.addDevice( mCurrentDevice );
-            mCurrentDevice = mParentDevice;
-            mParentDevice = mParentDevice.parentDevice();
+            Device parentDevice = mDeviceStack.pop();
+            parentDevice.addDevice( mCurrentDevice );
+            mCurrentDevice = parentDevice;
         }
         break;
     case UrlBaseElement:
