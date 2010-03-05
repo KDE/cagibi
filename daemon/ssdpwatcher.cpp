@@ -128,7 +128,7 @@ kDebug() << "Trying to find UPnP devices on the local network";
 
 RootDevice* SSDPWatcher::createDeviceFromResponse( const QByteArray& response )
 {
-    RootDevice* result = 0;
+    RootDevice* device = 0;
 
     const QStringList lines = QString::fromAscii( response ).split( "\r\n" );
 
@@ -229,10 +229,10 @@ kDebug()<<"Not interested in:"<<devicePrivate->type();
     {
 kDebug() << "Detected Device:" << server << "UUID" << uuid;
         // everything OK, make a new Device
-        result = new RootDevice( server, location, uuid );
+        device = new RootDevice( server, location, uuid );
     }
 
-    return result;
+    return device;
 }
 
 
