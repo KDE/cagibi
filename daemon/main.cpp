@@ -36,6 +36,7 @@
 void operator<<( QTextStream& out, const UPnP::Device& device )
 {
     static int indent = 0;
+    static int indentDiff = 2;
     QString space( indent, ' ' );
 
     const QList<UPnP::Service> services = device.services();
@@ -45,11 +46,11 @@ void operator<<( QTextStream& out, const UPnP::Device& device )
     foreach( const UPnP::Service& service, services )
         out << space << "* " << service.controlUrl() << " ("<<service.type()<<")"<<endl;
 
-    indent += 2;
+    indent += indentDiff;
     const QList<UPnP::Device> devices = device.devices();
     foreach( const UPnP::Device& device, devices )
         out << device;
-    indent -= 2;
+    indent -= indentDiff;
 }
 
 int main( int argc, char* argv[] )
