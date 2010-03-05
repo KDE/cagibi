@@ -23,6 +23,7 @@
 // lib
 #include "ssdpwatcher.h"
 #include "rootdevice.h"
+#include "device.h"
 #include "service.h"
 // KDE
 #include <KApplication>
@@ -32,6 +33,24 @@
 #include <QtCore/QTextStream>
 #include <QtCore/QTimer>
 
+void operator<<( QTextStream& out, const UPnP::Device& device )
+{
+    static int indent = 0;
+    QString space( indent, ' ' );
+
+    const QList<UPnP::Service> services = device.services();
+
+    out << space << device.friendlyName() << " ("<<device.type()<<")"<<endl;
+
+    foreach( const UPnP::Service& service, services )
+        out << space << "* " << service.controlUrl() << " ("<<service.type()<<")"<<endl;
+
+    indent += 2;
+    const QList<UPnP::Device> devices = device.devices();
+    foreach( const UPnP::Device& device, devices )
+        out << device;
+    indent -= 2;
+}
 
 int main( int argc, char* argv[] )
 {
@@ -41,22 +60,20 @@ int main( int argc, char* argv[] )
 
     UPnP::SSDPWatcher deviceBrowser;
     deviceBrowser.discover();
-// #if 0
+    // run loop at least once
+    QTimer::singleShot( 5000, &programCore, SLOT(quit()) );
+    const int result = programCore.exec();
+
     const QList<UPnP::RootDevice*> devices = deviceBrowser.devices();
     QTextStream out( stdout );
     out << "Found devices: " << endl;
-    foreach( const UPnP::RootDevice* device, devices )
+    foreach( const UPnP::RootDevice* rootDevice, devices )
     {
-//         const QList<UPnP::Service> services = device.services();
-
-        out << device->name() << endl;//" ("<<device.type()<<")"<<endl;
-//         out << device.displayName() << " ("<<device.type()<<")"<<endl;
-//         foreach( const UPnP::Service& service, services )
-//             out << "* " << service.displayName() << " ("<<service.type()<<")"<<endl;
+        const UPnP::Device device = rootDevice->device();
+        out << device;
     }
-// #endif
+
     out << "That's all." << endl;
-    // run loop at least once
-    QTimer::singleShot( 5000, &programCore, SLOT(quit()) );
-    return programCore.exec();
+
+    return result;
 }
