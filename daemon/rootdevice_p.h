@@ -51,13 +51,12 @@ class RootDevicePrivate
     const QString& name() const;
     const QString& uuid() const;
     const KUrl& location() const;
-    const Device& description() const;
+    const Device& device() const;
     const QString& lastError() const;
 
   public:
     void startDescriptionDownload();
-
-    Device& description();
+    void setBaseUrl( const QString& baseUrl );
 
   public: // slots
     void onDescriptionDownloadDone( KJob* job );
@@ -69,6 +68,7 @@ class RootDevicePrivate
     QString mName;
     KUrl mLocation;
     QString mUuid;
+    QString mBaseUrl;
 
     Device mDevice;
 
@@ -92,14 +92,13 @@ inline RootDevicePrivate::RootDevicePrivate( const QString& name, const KUrl& lo
 
 }
 
-
 inline const QString& RootDevicePrivate::name() const { return mName; }
 inline const QString& RootDevicePrivate::uuid() const { return mUuid; }
 inline const KUrl& RootDevicePrivate::location() const { return mLocation; }
-inline const Device& RootDevicePrivate::description() const { return mDevice; }
+inline const Device& RootDevicePrivate::device() const { return mDevice; }
 inline const QString& RootDevicePrivate::lastError() const { return mError; }
 
-inline Device& RootDevicePrivate::description() { return mDevice; }
+inline void RootDevicePrivate::setBaseUrl( const QString& baseUrl ) { mBaseUrl = baseUrl; }
 
 }
 

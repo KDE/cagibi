@@ -59,4 +59,10 @@ kDebug()<<type<<url;
     mServices.append( service );
 }
 
+void DevicePrivate::addDevice( const Device& device )
+{
+kDebug()<<device.friendlyName();
+    mDevices.append( device );
+}
+
 }

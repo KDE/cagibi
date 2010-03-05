@@ -34,8 +34,10 @@ namespace UPnP
 {
 
 DeviceDescriptionXMLHandler::DeviceDescriptionXMLHandler( RootDevice* device )
-  : mRootDevice( device )
-{}
+  : mRootDevice( device ),
+    mCurrentDevice( device->device() )
+{
+}
 
 
 bool DeviceDescriptionXMLHandler::startDocument()
@@ -143,7 +145,7 @@ bool DeviceDescriptionXMLHandler::endElement( const QString& namespaceURI, const
     {
     case DataElement:
         if( mStatusStack.top() == DeviceElement )
-            mRootDevice->description().setProperty( localName, mCharacterData );
+            mCurrentDevice.setProperty( localName, mCharacterData );
         else if( mStatusStack.top() == IconElement )
             mCurrentIcon.setProperty( localName, mCharacterData );
         else if( mStatusStack.top() == ServiceElement )
@@ -162,8 +164,7 @@ bool DeviceDescriptionXMLHandler::endElement( const QString& namespaceURI, const
         mCurrentDevice = Device();
         break;
     case UrlBaseElement:
-        // TODO: make the base url used
-        mBaseUrl = mCharacterData;
+        mRootDevice->setBaseUrl( mCharacterData );
         break;
     default:
         break;

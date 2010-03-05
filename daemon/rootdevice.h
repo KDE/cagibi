@@ -32,7 +32,6 @@ class KUrl;
 
 namespace UPnP
 {
-class Service;
 class Device;
 class SoapAgent;
 class RootDevicePrivate;
@@ -50,16 +49,17 @@ class RootDevice : public QObject
     virtual ~RootDevice();
 
   public:
-    const QString& name() const;
-    const QString& uuid() const;
-    const KUrl& location() const;
-    const Device& description() const;
-    const QString& lastError() const;
+    QString name() const;
+    QString uuid() const;
+    KUrl location() const;
+
+    Device device() const;
+
+    QString lastError() const;
 
   public:
     void startDescriptionDownload();
-
-    Device& description();
+    void setBaseUrl( const QString& baseUrl );
 
   Q_SIGNALS:
     void descriptionDownloadDone( RootDevice* device, bool success );

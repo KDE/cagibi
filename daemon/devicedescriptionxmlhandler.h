@@ -56,7 +56,7 @@ class DeviceDescriptionXMLHandler : public QXmlDefaultHandler
     };
 
   public:
-    DeviceDescriptionXMLHandler( RootDevice* device );
+    explicit DeviceDescriptionXMLHandler( RootDevice* device );
 
     virtual ~DeviceDescriptionXMLHandler();
 
@@ -75,7 +75,6 @@ class DeviceDescriptionXMLHandler : public QXmlDefaultHandler
     Service mCurrentService;
     Device mCurrentDevice;
 
-    QString mBaseUrl;
     QString mCharacterData;
     QStack<Element> mStatusStack;
 };

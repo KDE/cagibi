@@ -26,6 +26,7 @@
 // lib
 #include "icon.h"
 #include "service.h"
+#include "device.h"
 // Qt
 #include <QtCore/QList>
 #include <QtCore/QSharedData>
@@ -56,9 +57,12 @@ class DevicePrivate : public QSharedData
 
     const QList<Icon>& icons() const;
     const QList<Service>& services() const;
+    const QList<Device>& devices() const;
 
   public:
     void setProperty( const QString& key, const QString& value );
+
+    void addDevice( const Device& device );
     void addService( const Service& service );
     void addIcon( const Icon& icon );
 
@@ -78,6 +82,7 @@ class DevicePrivate : public QSharedData
 
     QList<Icon> mIcons;
     QList<Service> mServices;
+    QList<Device> mDevices;
 };
 
 
@@ -91,6 +96,7 @@ inline const QString& DevicePrivate::udn() const { return mUdn; }
 inline const QString& DevicePrivate::presentationUrl() const { return mPresentationUrl; }
 inline const QList<Icon>& DevicePrivate::icons() const { return mIcons; }
 inline const QList<Service>& DevicePrivate::services() const { return mServices; }
+inline const QList<Device>& DevicePrivate::devices() const { return mDevices; }
 
 inline void DevicePrivate::setProperty( const QString& key, const QString& value )
 {

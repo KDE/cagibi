@@ -35,19 +35,20 @@ RootDevice::RootDevice( const QString& name, const KUrl& location, const QString
 {
 }
 
-const QString& RootDevice::name() const { return d->name(); }
-const QString& RootDevice::uuid() const { return d->uuid(); }
-const KUrl& RootDevice::location() const { return d->location(); }
-const Device& RootDevice::description() const { return d->description(); }
-const QString& RootDevice::lastError() const { return d->lastError(); }
-
-Device& RootDevice::description() { return d->description(); }
+QString RootDevice::name() const { return d->name(); }
+QString RootDevice::uuid() const { return d->uuid(); }
+KUrl RootDevice::location() const { return d->location(); }
+Device RootDevice::device() const { return d->device(); }
+QString RootDevice::lastError() const { return d->lastError(); }
 
 void RootDevice::startDescriptionDownload()
 {
     d->startDescriptionDownload();
 }
-
+void RootDevice::setBaseUrl( const QString& baseUrl )
+{
+    d->setBaseUrl( baseUrl );
+}
 
 RootDevice::~RootDevice()
 {
