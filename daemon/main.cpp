@@ -22,7 +22,7 @@
 
 // lib
 #include "ssdpwatcher.h"
-#include "device.h"
+#include "rootdevice.h"
 #include "service.h"
 // KDE
 #include <KApplication>
@@ -42,10 +42,10 @@ int main( int argc, char* argv[] )
     UPnP::SSDPWatcher deviceBrowser;
     deviceBrowser.discover();
 // #if 0
-    const QList<UPnP::Device*> devices = deviceBrowser.devices();
+    const QList<UPnP::RootDevice*> devices = deviceBrowser.devices();
     QTextStream out( stdout );
     out << "Found devices: " << endl;
-    foreach( const UPnP::Device* device, devices )
+    foreach( const UPnP::RootDevice* device, devices )
     {
 //         const QList<UPnP::Service> services = device.services();
 

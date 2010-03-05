@@ -1,7 +1,7 @@
 /*
     This file is part of the KUPnP library, part of the KDE project.
 
-    Copyright 2009-2010 Friedrich W. H. Kossebau <kossebau@kde.org>
+    Copyright 2009 Friedrich W. H. Kossebau <kossebau@kde.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -20,53 +20,19 @@
     License along with this library. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ICON_H
-#define ICON_H
-
-// Qt
-#include <QtCore/QExplicitlySharedDataPointer>
-
-class QString;
+#include "icon_p.h"
 
 
 namespace UPnP
 {
-class IconPrivate;
 
-
-class Icon
+const char* const IconPrivate::keys[] =
 {
-  friend class DeviceDescriptionXmlHandler;
-
-  public:
-    static bool isKey( const QString& key );
-
-  protected:
-    explicit Icon( IconPrivate* _d );
-
-  public:
-    Icon();
-    Icon( const Icon& other );
-    ~Icon();
-
-  public:
-    Icon& operator=( const Icon& other );
-    bool operator==( const Icon& other ) const;
-
-  public:
-    QString mimeType() const;
-    int width() const;
-    int height() const;
-    int depth() const;
-    QString url() const;
-
-  public:
-    void setProperty( const QString& key, const QString& value );
-
-  protected:
-    QExplicitlySharedDataPointer<IconPrivate> d;
+    "mimetype",
+    "width",
+    "height",
+    "depth",
+    "url"
 };
 
 }
-
-#endif

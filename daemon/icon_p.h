@@ -20,69 +20,70 @@
     License along with this library. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DEVICEDESCRIPTION_H
-#define DEVICEDESCRIPTION_H
+#ifndef ICON_P_H
+#define ICON_P_H
 
 // Qt
 #include <QtCore/QString>
+#include <QtCore/QSharedData>
 
 
 namespace UPnP
 {
 
-class DeviceDescription
+class IconPrivate : public QSharedData
 {
   public:
     static const char* const keys[];
-    enum { FriendlyName=0, Manufacturer, ModelDescription, ModelName, ModelNumber, SerialNumber, UDN, PresentationUrl, KeyCount };
+    enum { Mimetype=0, Width, Height, Depth, Url, KeyCount };
 
     static bool isKey( const QString& key );
 
   public:
-    const QString& friendlyName() const;
+    IconPrivate();
+
+  public:
+    const QString& mimeType() const;
+    int width() const;
+    int height() const;
+    int depth() const;
+    const QString& url() const;
 
   public:
     void setProperty( const QString& key, const QString& value );
 
   protected:
-    /// short user-friendly title
-    QString mFriendlyName;
-    QString mManufacturerName;
-//     QString mManufacturerUrl;
-    /// long user-friendly title
-    QString mModelDescription;
-    QString mModelName;
-    QString mModelNumber;
-    QString mSerialNumber;
-    QString mUdn;
-//     QString mUpc; Universal Product Code;
-    QString mPresentationUrl;
+    QString mMimeType;
+    int mWidth;
+    int mHeight;
+    int mDepth;
+    QString mUrl;
 };
 
 
-inline const QString& DeviceDescription::friendlyName() const { return mFriendlyName; }
+inline IconPrivate::IconPrivate() : mWidth( 0 ), mHeight( 0 ), mDepth( 0 ) {}
 
-inline void DeviceDescription::setProperty( const QString& key, const QString& value )
+inline const QString& IconPrivate::mimeType() const { return mMimeType; }
+inline int IconPrivate::width() const { return mWidth; }
+inline int IconPrivate::height() const { return mHeight; }
+inline int IconPrivate::depth() const { return mDepth; }
+inline const QString& IconPrivate::url() const { return mUrl; }
+
+inline void IconPrivate::setProperty( const QString& key, const QString& value )
 {
-    if( key == keys[FriendlyName] )
-        mFriendlyName = value;
-    else if( key == keys[Manufacturer] )
-        mManufacturerName = value;
-    else if( key == keys[ModelDescription] )
-        mModelDescription = value;
-    else if( key == keys[ModelName] )
-        mModelName = value;
-    else if( key == keys[ModelNumber] )
-        mModelNumber == value;
-    else if( key == keys[SerialNumber] )
-        mSerialNumber == value;
-    else if( key == keys[UDN] )
-        mUdn == value;
-    else if( key == keys[PresentationUrl] )
-        mPresentationUrl == value;
+    if( key == keys[Mimetype] )
+        mMimeType = value;
+    else if( key == keys[Width] )
+        mWidth = value.toInt();
+    else if( key == keys[Height] )
+        mHeight = value.toInt();
+    else if( key == keys[Depth] )
+        mDepth = value.toInt();
+    else if( key == keys[Url] )
+        mUrl == value;
 }
 
-inline bool DeviceDescription::isKey( const QString& key )
+inline bool IconPrivate::isKey( const QString& key )
 {
     bool result = false;
 

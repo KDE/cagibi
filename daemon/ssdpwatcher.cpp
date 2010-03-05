@@ -23,7 +23,7 @@
 #include "ssdpwatcher.h"
 
 // lib
-#include "device.h"
+#include "rootdevice.h"
 // KDE
 #include <KUrl>
 // Qt
@@ -112,7 +112,9 @@ kDebug() << "Trying to find UPnP devices on the local network";
     const char mSearchMessage[] =
         "M-SEARCH * HTTP/1.1\r\n"
         "HOST: 239.255.255.250:1900\r\n"
-        "ST:urn:schemas-upnp-org:device:upnp:rootdevice:1\r\n"
+//         "ST:urn:schemas-upnp-org:device:upnp:rootdevice:1\r\n"
+        "ST:urn:schemas-upnp-org:device:InternetGatewayDevice:1\r\n"
+//         "ST:urn:schemas-upnp-org:device:WANDevice:1\r\n"
         "MAN:\"ssdp:discover\"\r\n"
         "MX:3\r\n"
         "\r\n";
@@ -122,9 +124,9 @@ kDebug() << "Trying to find UPnP devices on the local network";
 }
 
 
-Device* SSDPWatcher::createDeviceFromResponse( const QByteArray& response )
+RootDevice* SSDPWatcher::createDeviceFromResponse( const QByteArray& response )
 {
-    Device* result = 0;
+    RootDevice* result = 0;
 
     const QStringList lines = QString::fromAscii( response ).split( "\r\n" );
 
@@ -225,14 +227,14 @@ kDebug()<<"Not interested in:"<<devicePrivate->type();
     {
 kDebug() << "Detected Device:" << server << "UUID" << uuid;
         // everything OK, make a new Device
-        result = new Device( server, location, uuid );
+        result = new RootDevice( server, location, uuid );
     }
 
     return result;
 }
 
 
-void SSDPWatcher::onDescriptionDownloadDone( Device* device, bool success )
+void SSDPWatcher::onDescriptionDownloadDone( RootDevice* device, bool success )
 {
     mPendingDevices.remove( device );
     if( ! success )
@@ -242,7 +244,7 @@ void SSDPWatcher::onDescriptionDownloadDone( Device* device, bool success )
     else
     {
         mDevices.insert( device->uuid(), device );
-kDebug()<< "Added:"<<device->description().friendlyName()<<device->uuid();
+kDebug()<< "Added:"<<device->name()<<device->uuid();
         emit deviceDiscovered( device );
     }
 }
@@ -257,11 +259,11 @@ void SSDPWatcher::onReadyRead()
         // TODO: error handling
         return;
 
-    Device* device = createDeviceFromResponse( data );
+    RootDevice* device = createDeviceFromResponse( data );
     if( device )
     {
-        connect( device, SIGNAL(descriptionDownloadDone( Device*, bool )),
-                 SLOT(onDescriptionDownloadDone( Device*, bool )) );
+        connect( device, SIGNAL(descriptionDownloadDone( RootDevice*, bool )),
+                 SLOT(onDescriptionDownloadDone( RootDevice*, bool )) );
 
         device->startDescriptionDownload();
         mPendingDevices.insert( device );

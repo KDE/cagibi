@@ -3,10 +3,14 @@ include_directories(
 
 set( kupnpserver_LIB_SRCS
   devicedescriptionxmlhandler.cpp
-  devicedescription.cpp
   soapagent.cpp
+  icon_p.cpp
   icon.cpp
+  service_p.cpp
   service.cpp
+  device_p.cpp
+  device.cpp
+  rootdevice_p.cpp
   rootdevice.cpp
   ssdpwatcher.cpp
 )

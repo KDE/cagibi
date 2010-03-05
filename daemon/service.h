@@ -25,118 +25,45 @@
 
 // Qt
 #include <QtCore/QMetaType>
-#include <QtCore/QString>
+#include <QtCore/QExplicitlySharedDataPointer>
+
+class QString;
 
 
 namespace UPnP
 {
+class ServicePrivate;
+
 
 class Service
 {
   public:
-    static const char* const keys[];
-    enum { ServiceType=0, ControlUrl, EventSubUrl, SCPDUrl, ServiceId, KeyCount };
-
     static bool isKey( const QString& key );
+
+  protected:
+    explicit Service( ServicePrivate* _d );
 
   public:
     Service();
     Service( const Service& other );
+    ~Service();
 
   public:
-    const QString& type() const;
-    const QString& controlUrl() const;
+    Service& operator=( const Service& other );
+    bool operator==( const Service& other ) const;
+
+  public:
+    QString type() const;
+    QString controlUrl() const;
     bool isReady() const;
 
   public:
     void setProperty( const QString& key, const QString& value );
     void setReady();
-    void clear();
-
-    Service& operator =( const Service& other );
 
   protected:
-    QString mType;
-    int mTypeVersion;
-    QString mId;
-    QString mDescriptionUrl;
-    QString mControlUrl;
-    QString mEventSubUrl;
-
-    bool mReady;
+    QExplicitlySharedDataPointer<ServicePrivate> d;
 };
-
-
-inline Service::Service()
-  : mReady( false )
-{
-}
-
-inline const QString& Service::type()       const { return mType; }
-inline const QString& Service::controlUrl() const { return mControlUrl; }
-inline bool Service::isReady()              const { return mReady; }
-
-inline void Service::setReady() { mReady = true; }
-
-
-inline Service::Service( const Service& other )
-{
-    mType = other.mType;
-    mControlUrl = other.mControlUrl;
-    mEventSubUrl = other.mEventSubUrl;
-    mId = other.mId;
-    mDescriptionUrl = other.mDescriptionUrl;
-
-    mReady = false;
-}
-
-inline void Service::setProperty( const QString& key, const QString& value )
-{
-    if( key == keys[ServiceType] )
-        mType = value;
-    else if( key == keys[ControlUrl] )
-        mControlUrl = value;
-    else if( key == keys[EventSubUrl] )
-        mEventSubUrl = value;
-    else if( key == keys[SCPDUrl] )
-        mDescriptionUrl = value;
-    else if( key == keys[ServiceId] )
-        mId = value;
-}
-
-inline void Service::clear()
-{
-    mType.clear();
-    mControlUrl.clear();
-    mEventSubUrl.clear();
-    mDescriptionUrl.clear();
-    mId.clear();
-}
-
-inline Service & Service::operator =( const Service& other )
-{
-    mType = other.mType;
-    mControlUrl = other.mControlUrl;
-    mEventSubUrl = other.mEventSubUrl;
-    mId = other.mId;
-    mDescriptionUrl = other.mDescriptionUrl;
-
-    return *this;
-}
-
-inline bool Service::isKey( const QString& key )
-{
-    bool result = false;
-
-    for( int i=0; i<KeyCount; ++i )
-        if( key == QLatin1String(keys[i]) )
-        {
-            result = true;
-            break;
-        }
-
-    return result;
-}
 
 }
 

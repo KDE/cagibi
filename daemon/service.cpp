@@ -21,18 +21,54 @@
 */
 
 #include "service.h"
+#include "service_p.h"
 
 
 namespace UPnP
 {
+bool Service::isKey( const QString& key ) { return ServicePrivate::isKey(key); }
 
-const char* const Service::keys[] =
+
+Service::Service()
+  : d( new ServicePrivate() )
 {
-    "serviceType",
-    "controlURL",
-    "eventSubURL",
-    "SCPDURL",
-    "serviceId"
+}
+
+Service::Service( ServicePrivate* _d )
+  : d( _d )
+{
+}
+
+Service::Service( const Service& other )
+  : d( other.d )
+{
+}
+
+
+QString Service::type() const { return d->type(); }
+bool Service::isReady() const { return d->isReady(); }
+QString Service::controlUrl() const { return d->controlUrl(); }
+
+void Service::setProperty( const QString& key, const QString& value )
+{
+    d->setProperty( key, value );
 };
+
+void Service::setReady() { d->setReady(); }
+
+Service& Service::operator=( const Service& other )
+{
+    d = other.d;
+    return *this;
+}
+
+bool Service::operator==( const Service& other ) const
+{
+    return ( d == other.d );
+}
+
+Service::~Service()
+{
+}
 
 }

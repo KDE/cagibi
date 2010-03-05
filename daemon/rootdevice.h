@@ -23,27 +23,26 @@
 #ifndef ROOTDEVICE_H
 #define ROOTDEVICE_H
 
-// lib
-#include "icon.h"
-#include "service.h"
-#include "devicedescription.h"
-// KDE
-#include <KUrl>
 // Qt
 #include <QtCore/QObject>
 
 class KJob;
+class KUrl;
 
 
 namespace UPnP
 {
 class Service;
+class Device;
 class SoapAgent;
+class RootDevicePrivate;
 
 
 class RootDevice : public QObject
 {
   Q_OBJECT
+
+  friend class RootDevicePrivate;
 
   public:
     RootDevice( const QString& name, const KUrl& location, const QString& uuid );
@@ -54,45 +53,24 @@ class RootDevice : public QObject
     const QString& name() const;
     const QString& uuid() const;
     const KUrl& location() const;
-    const DeviceDescription& description() const;
+    const Device& description() const;
     const QString& lastError() const;
 
   public:
     void startDescriptionDownload();
-    void addService( const Service& service );
-    void addIcon( const Icon& icon );
 
-    DeviceDescription& description();
+    Device& description();
 
   Q_SIGNALS:
     void descriptionDownloadDone( RootDevice* device, bool success );
 
-  protected Q_SLOTS:
-    void onDescriptionDownloadDone( KJob* job );
-    void onSoapReplyReceived( const QByteArray& reply, const QVariant& data );
+  protected:
+    Q_PRIVATE_SLOT( d, void onDescriptionDownloadDone( KJob* job ) )
+    Q_PRIVATE_SLOT( d, void onSoapReplyReceived( const QByteArray& reply, const QVariant& data ) )
 
   protected:
-    QString mName;
-    KUrl mLocation;
-    QString mUuid;
-    DeviceDescription mDescription;
-
-    QList<Icon> mIcons;
-    QList<Service> mServices;
-
-    SoapAgent* mSoapAgent;
-
-    QString mError;
+    RootDevicePrivate* d;
 };
-
-
-inline const QString& RootDevice::name() const { return mName; }
-inline const QString& RootDevice::uuid() const { return mUuid; }
-inline const KUrl& RootDevice::location() const { return mLocation; }
-inline const DeviceDescription& RootDevice::description() const { return mDescription; }
-inline const QString& RootDevice::lastError() const { return mError; }
-
-inline DeviceDescription& RootDevice::description() { return mDescription; }
 
 }
 

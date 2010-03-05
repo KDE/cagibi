@@ -26,6 +26,7 @@
 // lib
 #include "icon.h"
 #include "service.h"
+#include "device.h"
 // Qt
 #include <QtXml/QXmlDefaultHandler>
 #include <QtCore/QStack>
@@ -33,7 +34,7 @@
 
 namespace UPnP
 {
-class Device;
+class RootDevice;
 
 
 class DeviceDescriptionXMLHandler : public QXmlDefaultHandler
@@ -49,12 +50,13 @@ class DeviceDescriptionXMLHandler : public QXmlDefaultHandler
                 ServiceListElement,
                     ServiceElement,
                         DataElement,
-//                 DeviceList, TODO
+                DeviceListElement,
+                    // here recursively a DeviceElement
         UnknownElement
     };
 
   public:
-    DeviceDescriptionXMLHandler( Device* device );
+    DeviceDescriptionXMLHandler( RootDevice* device );
 
     virtual ~DeviceDescriptionXMLHandler();
 
@@ -62,15 +64,16 @@ class DeviceDescriptionXMLHandler : public QXmlDefaultHandler
     virtual bool startDocument();
     virtual bool endDocument();
     virtual bool startElement( const QString& namespaceURI, const QString& localName, const QString& qName,
-                               const QXmlAttributes& attributes);
+                               const QXmlAttributes& attributes );
     virtual bool endElement( const QString& namespaceURI, const QString& localName, const QString& qName );
     virtual bool characters( const QString& characters );
 
   protected:
-    Device* mDevice;
+    RootDevice* mRootDevice;
 
     Icon mCurrentIcon;
     Service mCurrentService;
+    Device mCurrentDevice;
 
     QString mBaseUrl;
     QString mCharacterData;

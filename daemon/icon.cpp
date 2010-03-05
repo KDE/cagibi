@@ -21,18 +21,55 @@
 */
 
 #include "icon.h"
+#include "icon_p.h"
 
 
 namespace UPnP
 {
+bool Icon::isKey( const QString& key ) { return IconPrivate::isKey(key); }
 
-const char* const Icon::keys[] =
+
+Icon::Icon()
+  : d( new IconPrivate() )
 {
-    "mimetype",
-    "width",
-    "height",
-    "depth",
-    "url"
+}
+
+Icon::Icon( IconPrivate* _d )
+  : d( _d )
+{
+}
+
+Icon::Icon( const Icon& other )
+  : d( other.d )
+{
+}
+
+
+QString Icon::mimeType() const { return d->mimeType(); }
+int Icon::width() const { return d->width(); }
+int Icon::height() const { return d->height(); }
+int Icon::depth() const { return d->depth(); }
+QString Icon::url() const { return d->url(); }
+
+void Icon::setProperty( const QString& key, const QString& value )
+{
+    d->setProperty( key, value );
 };
+
+
+Icon& Icon::operator=( const Icon& other )
+{
+    d = other.d;
+    return *this;
+}
+
+bool Icon::operator==( const Icon& other ) const
+{
+    return ( d == other.d );
+}
+
+Icon::~Icon()
+{
+}
 
 }

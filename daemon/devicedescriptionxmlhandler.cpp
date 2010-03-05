@@ -23,6 +23,7 @@
 #include "devicedescriptionxmlhandler.h"
 
 // lib
+#include "rootdevice.h"
 #include "device.h"
 // Qt
 #include <QtXml/QXmlAttributes>
@@ -32,8 +33,8 @@
 namespace UPnP
 {
 
-DeviceDescriptionXMLHandler::DeviceDescriptionXMLHandler( Device* device )
-  : mDevice( device )
+DeviceDescriptionXMLHandler::DeviceDescriptionXMLHandler( RootDevice* device )
+  : mRootDevice( device )
 {}
 
 
@@ -51,10 +52,11 @@ bool DeviceDescriptionXMLHandler::endDocument()
 
 bool DeviceDescriptionXMLHandler::startElement( const QString& namespaceURI, const QString& localName,
                                                 const QString& qName,
-                                                const QXmlAttributes& )
+                                                const QXmlAttributes& attributes )
 {
     Q_UNUSED( namespaceURI );
     Q_UNUSED( qName );
+    Q_UNUSED( attributes );
 
     bool result = true;
 
@@ -77,12 +79,14 @@ bool DeviceDescriptionXMLHandler::startElement( const QString& namespaceURI, con
             mStatusStack.push( UnknownElement );
         break;
     case DeviceElement:
-        if( DeviceDescription::isKey(localName) )
+        if( Device::isKey(localName) )
             mStatusStack.push( DataElement );
         else if( localName == QLatin1String("iconList") )
             mStatusStack.push( IconListElement );
         else if( localName == QLatin1String("serviceList") )
             mStatusStack.push( ServiceListElement );
+        else if( localName == QLatin1String("deviceList") )
+            mStatusStack.push( DeviceListElement );
         else
             mStatusStack.push( UnknownElement );
         break;
@@ -110,6 +114,12 @@ bool DeviceDescriptionXMLHandler::startElement( const QString& namespaceURI, con
         else
             mStatusStack.push( UnknownElement );
         break;
+    case DeviceListElement:
+        if( localName == QLatin1String("device") )
+            mStatusStack.push( DeviceElement );
+        else
+            mStatusStack.push( UnknownElement );
+        break;
     case UnknownElement:
             mStatusStack.push( UnknownElement );
         break;
@@ -133,19 +143,23 @@ bool DeviceDescriptionXMLHandler::endElement( const QString& namespaceURI, const
     {
     case DataElement:
         if( mStatusStack.top() == DeviceElement )
-            mDevice->description().setProperty( localName, mCharacterData );
+            mRootDevice->description().setProperty( localName, mCharacterData );
         else if( mStatusStack.top() == IconElement )
             mCurrentIcon.setProperty( localName, mCharacterData );
         else if( mStatusStack.top() == ServiceElement )
             mCurrentService.setProperty( localName, mCharacterData );
         break;
     case IconElement:
-        mDevice->addIcon( mCurrentIcon );
+        mCurrentDevice.addIcon( mCurrentIcon );
         mCurrentIcon = Icon();
         break;
     case ServiceElement:
-        mDevice->addService( mCurrentService );
-        mCurrentService.clear();
+        mCurrentDevice.addService( mCurrentService );
+        mCurrentService = Service();
+        break;
+    case DeviceElement:
+//         mRootDevice->addDevice( mCurrentDevice );
+        mCurrentDevice = Device();
         break;
     case UrlBaseElement:
         // TODO: make the base url used

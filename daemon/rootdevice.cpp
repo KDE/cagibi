@@ -21,116 +21,37 @@
 */
 
 #include "rootdevice.h"
+#include "rootdevice_p.h"
+#include "rootdevice.moc"
 
-// server
-#include "soapagent.h"
-#include "devicedescriptionxmlhandler.h"
-// KDE
-#include <KIO/Job>
-#include <KIO/NetAccess>
-#include <KLocale>
-
-#include <KDebug>
 
 namespace UPnP
 {
 
-static bool parseDescription( RootDevice* device, const QByteArray& data, QString* error )
-{
-    bool result = true;
-
-    QXmlInputSource input;
-    input.setData( data );
-
-    QXmlSimpleReader reader;
-    DeviceDescriptionXMLHandler descriptionXMLHandler( device);
-    reader.setContentHandler( &descriptionXMLHandler );
-
-    result = reader.parse( &input, false );
-
-    if( ! result )
-        *error = i18n( "Error parsing XML of device description." );
-
-    return result;
-}
-
 
 RootDevice::RootDevice( const QString& name, const KUrl& location, const QString& uuid )
-  : mName( name ),
-    mLocation( location ),
-    mUuid( uuid ),
-    mSoapAgent( new SoapAgent(location,this) )
+  : QObject(),
+    d( new RootDevicePrivate(name,location,uuid,this) )
 {
-    connect( mSoapAgent, SIGNAL(replyReceived( const QByteArray&, const QVariant& )),
-             SLOT(onSoapReplyReceived( const QByteArray&, const QVariant& )) );
-
 }
 
-void RootDevice::addIcon( const Icon& icon )
-{
-kDebug()<<icon.url()<<icon.width()<<"x"<<icon.height();
-    mIcons.append( icon );
-}
+const QString& RootDevice::name() const { return d->name(); }
+const QString& RootDevice::uuid() const { return d->uuid(); }
+const KUrl& RootDevice::location() const { return d->location(); }
+const Device& RootDevice::description() const { return d->description(); }
+const QString& RootDevice::lastError() const { return d->lastError(); }
 
-void RootDevice::addService( const Service& service )
-{
-    const QString& type = service.type();
-    const QString actionId =  QString::fromLatin1( "GetStatusInfo" );
-    const QString& url = service.controlUrl();
-kDebug()<<type<<url;
-    mSoapAgent->sendCommand( type, actionId, url, QVariant::fromValue<Service>(service) );
-}
-
+Device& RootDevice::description() { return d->description(); }
 
 void RootDevice::startDescriptionDownload()
 {
-kDebug() << "Downloading description from " << mLocation.prettyUrl();
-
-    mError = QString();
-
-    KIO::Job* job = KIO::storedGet( mLocation, KIO::NoReload, KIO::Overwrite | KIO::HideProgressInfo );
-    connect( job, SIGNAL(result( KJob* )), SLOT(onDescriptionDownloadDone( KJob* )) );
+    d->startDescriptionDownload();
 }
 
-void RootDevice::onDescriptionDownloadDone( KJob* job )
+
+RootDevice::~RootDevice()
 {
-    if( job->error() )
-    {
-        mError = i18n( "Failed to download from \"%1\": %2", mLocation.prettyUrl(), job->errorString() );
-kDebug() << mError;
-        return;
-    }
-
-    KIO::StoredTransferJob* storedTransferJob = static_cast<KIO::StoredTransferJob*>( job );
-kDebug()<< QString::fromAscii(storedTransferJob->data());
-    const bool success = parseDescription( this, storedTransferJob->data(), &mError );
-
-    emit descriptionDownloadDone( this, success );
+    delete d;
 }
-
-
-void RootDevice::onSoapReplyReceived( const QByteArray& reply, const QVariant& data )
-{
-    const bool isError = reply.isEmpty();
-    if( isError )
-    {
-        mError = mSoapAgent->lastError();
-kDebug() << "Error: " << mError;
-    }
-    else
-    {
-        if( reply.contains("Connected") )
-        {
-            Service service = data.value<Service>();
-            service.setReady();
-            mServices.append( service );
-
-kDebug() << "Service added: " << service.type();
-        }
-    }
-}
-
-
-RootDevice::~RootDevice() {}
 
 }

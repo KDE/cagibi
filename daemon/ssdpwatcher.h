@@ -33,7 +33,7 @@ class QUdpSocket;
 
 namespace UPnP
 {
-class Device;
+class RootDevice;
 
 
 class SSDPWatcher : public QObject
@@ -47,33 +47,33 @@ class SSDPWatcher : public QObject
 
   public:
     int devicesCount() const;
-    QList<Device*> devices() const;
+    QList<RootDevice*> devices() const;
 
   public Q_SLOTS:
     void discover();
 
   Q_SIGNALS:
-    void deviceDiscovered( UPnP::Device* device );
-    void deviceRemoved( UPnP::Device* device );
+    void deviceDiscovered( UPnP::RootDevice* device );
+    void deviceRemoved( UPnP::RootDevice* device );
 
   protected:
-    Device* createDeviceFromResponse( const QByteArray& response );
+    RootDevice* createDeviceFromResponse( const QByteArray& response );
 
   protected Q_SLOTS:
     void onReadyRead();
     void onError( QAbstractSocket::SocketError error );
-    void onDescriptionDownloadDone( Device* device, bool success );
+    void onDescriptionDownloadDone( RootDevice* device, bool success );
 
   protected:
-    QHash<QString,Device*> mDevices;
-    QSet<Device*> mPendingDevices;
+    QHash<QString,RootDevice*> mDevices;
+    QSet<RootDevice*> mPendingDevices;
 
     QUdpSocket* mUdpSocket;
 };
 
 
 inline int SSDPWatcher::devicesCount() const { return mDevices.count(); }
-inline QList<Device*> SSDPWatcher::devices() const { return mDevices.values(); }
+inline QList<RootDevice*> SSDPWatcher::devices() const { return mDevices.values(); }
 
 }
 

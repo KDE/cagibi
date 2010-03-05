@@ -20,51 +20,62 @@
     License along with this library. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ICON_H
-#define ICON_H
+#ifndef DEVICE_H
+#define DEVICE_H
 
 // Qt
 #include <QtCore/QExplicitlySharedDataPointer>
 
 class QString;
+template< class C > class QList;
 
 
 namespace UPnP
 {
-class IconPrivate;
+class DevicePrivate;
+class Icon;
+class Service;
 
 
-class Icon
+class Device
 {
-  friend class DeviceDescriptionXmlHandler;
-
   public:
     static bool isKey( const QString& key );
 
   protected:
-    explicit Icon( IconPrivate* _d );
+    explicit Device( DevicePrivate* _d );
 
   public:
-    Icon();
-    Icon( const Icon& other );
-    ~Icon();
+    Device();
+    Device( const Device& other );
+    ~Device();
 
   public:
-    Icon& operator=( const Icon& other );
-    bool operator==( const Icon& other ) const;
+    Device& operator=( const Device& other );
+    bool operator==( const Device& other ) const;
 
   public:
-    QString mimeType() const;
-    int width() const;
-    int height() const;
-    int depth() const;
-    QString url() const;
+    QString friendlyName() const;
+    QString manufacturerName() const;
+//     QString manufacturerUrl() const;
+    QString modelDescription() const;
+    QString modelName() const;
+    QString modelNumber() const;
+    QString serialNumber() const;
+    QString udn() const;
+//     QString upc() const;
+    QString presentationUrl() const;
+
+    QList<Icon> icons() const;
+    QList<Service> services() const;
 
   public:
     void setProperty( const QString& key, const QString& value );
+    void addService( const Service& service );
+    void addIcon( const Icon& icon );
 
   protected:
-    QExplicitlySharedDataPointer<IconPrivate> d;
+    QExplicitlySharedDataPointer<DevicePrivate> d;
 };
 
 }
