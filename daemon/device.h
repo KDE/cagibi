@@ -57,6 +57,7 @@ class Device
     bool operator==( const Device& other ) const;
 
   public:
+    QString type() const;
     QString friendlyName() const;
     QString manufacturerName() const;
 //     QString manufacturerUrl() const;

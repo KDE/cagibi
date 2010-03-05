@@ -39,7 +39,7 @@ class DevicePrivate : public QSharedData
 {
   public:
     static const char* const keys[];
-    enum { FriendlyName=0, Manufacturer, ModelDescription, ModelName, ModelNumber, SerialNumber, UDN, PresentationUrl, KeyCount };
+    enum { Type=0, FriendlyName, Manufacturer, ModelDescription, ModelName, ModelNumber, SerialNumber, UDN, PresentationUrl, KeyCount };
 
     static bool isKey( const QString& key );
 
@@ -47,6 +47,7 @@ class DevicePrivate : public QSharedData
     DevicePrivate();
 
   public:
+    const QString& type() const;
     const QString& friendlyName() const;
     const QString& manufacturerName() const;
 //     const QString& manufacturerUrl() const;
@@ -74,6 +75,7 @@ class DevicePrivate : public QSharedData
     void addIcon( const Icon& icon );
 
   protected:
+    QString mType;
     /// short user-friendly title
     QString mFriendlyName;
     QString mManufacturerName;
@@ -96,6 +98,7 @@ class DevicePrivate : public QSharedData
 
 
 inline DevicePrivate::DevicePrivate() : mParentDevicePrivate( 0 ) {}
+inline const QString& DevicePrivate::type() const { return mType; }
 inline const QString& DevicePrivate::friendlyName() const { return mFriendlyName; }
 inline const QString& DevicePrivate::manufacturerName() const { return mManufacturerName; }
 inline const QString& DevicePrivate::modelDescription() const { return mModelDescription; }
@@ -115,7 +118,9 @@ inline Device DevicePrivate::parentDevice() const
 
 inline void DevicePrivate::setProperty( const QString& key, const QString& value )
 {
-    if( key == keys[FriendlyName] )
+    if( key == keys[Type] )
+        mType = value;
+    else if( key == keys[FriendlyName] )
         mFriendlyName = value;
     else if( key == keys[Manufacturer] )
         mManufacturerName = value;

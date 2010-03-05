@@ -29,6 +29,7 @@ namespace UPnP
 
 const char* const DevicePrivate::keys[] =
 {
+    "deviceType",
     "friendlyName",
     "manufacturer",
     "modelDescription",

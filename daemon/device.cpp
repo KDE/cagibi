@@ -44,7 +44,7 @@ Device::Device( const Device& other )
 {
 }
 
-
+QString Device::type() const { return d->type(); }
 QString Device::friendlyName() const { return d->friendlyName(); }
 QString Device::manufacturerName() const { return d->manufacturerName(); }
 QString Device::modelDescription() const { return d->modelDescription(); }
