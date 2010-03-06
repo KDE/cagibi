@@ -27,7 +27,8 @@
 // Qt
 #include <QtCore/QList>
 
-#include <KDebug>
+
+#include <QtCore/QDebug>
 
 namespace UPnP
 {
@@ -76,7 +77,7 @@ static QString createSoapCommand( const QString& action, const QString& service,
 #endif
 
 
-SoapAgent::SoapAgent( const KUrl& location, QObject* parent )
+SoapAgent::SoapAgent( const QUrl& location, QObject* parent )
   : QObject( parent ),
     mLocation( location )
 {
@@ -133,14 +134,14 @@ void SoapAgent::onPostCommandJobFinished( KJob* job )
     if( job->error() )
     {
         mError = job->errorString();
-kDebug() << "Error: " << mError;
+qDebug() << "Error: " << mError;
     }
     else
     {
         const QByteArray soapReply = mReadBufferPerJob[job];
         const QVariant data = mPendingDataPerJob[job];
 
-kDebug() << "OK!";
+qDebug() << "OK!";
 
         emit replyReceived( soapReply, data );
     }

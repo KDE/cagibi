@@ -28,10 +28,9 @@
 #include "device.h"
 #include "service.h"
 #include "soapagent.h"
-// KDE
-#include <KUrl>
 // Qt
 #include <QtCore/QObject>
+#include <QtCore/QUrl>
 
 class KJob;
 
@@ -44,14 +43,14 @@ class SoapAgent;
 class RootDevicePrivate
 {
   public:
-    RootDevicePrivate( const QString& name, const KUrl& location, const QString& uuid, RootDevice* _p );
+    RootDevicePrivate( const QString& name, const QUrl& location, const QString& uuid, RootDevice* _p );
 
     ~RootDevicePrivate();
 
   public:
     const QString& name() const;
     const QString& uuid() const;
-    const KUrl& location() const;
+    const QUrl& location() const;
     const Device& device() const;
     const QString& lastError() const;
 
@@ -70,7 +69,7 @@ class RootDevicePrivate
     RootDevice* p;
 
     QString mName;
-    KUrl mLocation;
+    QUrl mLocation;
     QString mUuid;
     QString mBaseUrl;
 
@@ -85,7 +84,7 @@ class RootDevicePrivate
 
 
 
-inline RootDevicePrivate::RootDevicePrivate( const QString& name, const KUrl& location, const QString& uuid,
+inline RootDevicePrivate::RootDevicePrivate( const QString& name, const QUrl& location, const QString& uuid,
                                              RootDevice* _p )
   : p( _p ),
     mName( name ),
@@ -100,7 +99,7 @@ inline RootDevicePrivate::RootDevicePrivate( const QString& name, const KUrl& lo
 
 inline const QString& RootDevicePrivate::name() const { return mName; }
 inline const QString& RootDevicePrivate::uuid() const { return mUuid; }
-inline const KUrl& RootDevicePrivate::location() const { return mLocation; }
+inline const QUrl& RootDevicePrivate::location() const { return mLocation; }
 inline const Device& RootDevicePrivate::device() const { return mDevice; }
 inline const QString& RootDevicePrivate::lastError() const { return mError; }
 

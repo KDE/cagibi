@@ -25,7 +25,7 @@
 // lib
 #include "service_p.h"
 
-#include <KDebug>
+#include <QtCore/QDebug>
 
 namespace UPnP
 {
@@ -45,7 +45,7 @@ const char* const DevicePrivate::keys[] =
 
 void DevicePrivate::addIcon( const Icon& icon )
 {
-kDebug()<<icon.url()<<icon.width()<<"x"<<icon.height();
+qDebug()<<icon.url()<<icon.width()<<"x"<<icon.height();
     mIcons.append( icon );
 }
 
@@ -54,7 +54,7 @@ void DevicePrivate::addService( const Service& service )
     const QString& type = service.type();
     const QString actionId =  QString::fromLatin1( "GetStatusInfo" );
     const QString& url = service.controlUrl();
-kDebug()<<type<<url;
+qDebug()<<type<<url;
 // TODO
 #if 0
     mSoapAgent->sendCommand( type, actionId, url, QVariant::fromValue<Service>(service) );
@@ -66,7 +66,7 @@ kDebug()<<type<<url;
 
 void DevicePrivate::addDevice( const Device& device )
 {
-kDebug()<<device.friendlyName();
+qDebug()<<device.friendlyName();
     device.d.data()->setParentDevicePrivate( this );
     mDevices.append( device );
 }

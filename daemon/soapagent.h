@@ -23,11 +23,10 @@
 #ifndef SOAPAGENT_H
 #define SOAPAGENT_H
 
-// KDE
-#include <KUrl>
 // Qt
 #include <QtCore/QHash>
 #include <QtCore/QObject>
+#include <QtCore/QUrl>
 
 namespace KIO {
 class Job;
@@ -44,7 +43,7 @@ class SoapAgent : public QObject
   Q_OBJECT
 
   public:
-    explicit SoapAgent( const KUrl& url, QObject* parent = 0 );
+    explicit SoapAgent( const QUrl& url, QObject* parent = 0 );
     virtual ~SoapAgent();
 
   public:
@@ -63,7 +62,7 @@ class SoapAgent : public QObject
     void onPostCommandJobFinished( KJob* job );
 
   protected:
-    KUrl mLocation;
+    QUrl mLocation;
 
     QHash<KJob*, QByteArray> mReadBufferPerJob;
     QHash<KJob*, QByteArray> mWriteBufferPerJob;

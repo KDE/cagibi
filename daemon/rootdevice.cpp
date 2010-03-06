@@ -29,7 +29,7 @@ namespace UPnP
 {
 
 
-RootDevice::RootDevice( const QString& name, const KUrl& location, const QString& uuid )
+RootDevice::RootDevice( const QString& name, const QUrl& location, const QString& uuid )
   : QObject(),
     d( new RootDevicePrivate(name,location,uuid,this) )
 {
@@ -37,7 +37,7 @@ RootDevice::RootDevice( const QString& name, const KUrl& location, const QString
 
 QString RootDevice::name() const { return d->name(); }
 QString RootDevice::uuid() const { return d->uuid(); }
-KUrl RootDevice::location() const { return d->location(); }
+QUrl RootDevice::location() const { return d->location(); }
 Device RootDevice::device() const { return d->device(); }
 QString RootDevice::lastError() const { return d->lastError(); }
 

@@ -27,7 +27,7 @@
 #include <QtCore/QObject>
 
 class KJob;
-class KUrl;
+class QUrl;
 
 
 namespace UPnP
@@ -45,14 +45,14 @@ class RootDevice : public QObject
   friend class RootDevicePrivate;
 
   public:
-    RootDevice( const QString& name, const KUrl& location, const QString& uuid );
+    RootDevice( const QString& name, const QUrl& location, const QString& uuid );
 
     virtual ~RootDevice();
 
   public:
     QString name() const;
     QString uuid() const;
-    KUrl location() const;
+    QUrl location() const;
 
     Device device() const;
 

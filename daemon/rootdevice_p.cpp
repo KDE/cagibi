@@ -28,9 +28,8 @@
 // KDE
 #include <KIO/Job>
 #include <KIO/NetAccess>
-#include <KLocale>
 
-#include <KDebug>
+#include <QtCore/QDebug>
 
 namespace UPnP
 {
@@ -49,7 +48,7 @@ static bool parseDeviceDescription( RootDevice* device, const QByteArray& data, 
     result = reader.parse( &input, false );
 
     if( ! result )
-        *error = i18n( "Error parsing XML of device description." );
+        *error = QObject::tr( "Error parsing XML of device description." );
 
     return result;
 }
@@ -57,7 +56,7 @@ static bool parseDeviceDescription( RootDevice* device, const QByteArray& data, 
 
 void RootDevicePrivate::startDeviceDescriptionDownload()
 {
-kDebug() << "Downloading description from " << mLocation.prettyUrl();
+qDebug() << "Downloading description from " << mLocation;
 
     mError = QString();
 
@@ -67,8 +66,8 @@ kDebug() << "Downloading description from " << mLocation.prettyUrl();
 
 void RootDevicePrivate::startServiceDescriptionDownload( const Service& service )
 {
-    const KUrl location = mBaseUrl + service.descriptionUrl();
-kDebug() << "Downloading service description from " << location.prettyUrl();
+    const QUrl location = mBaseUrl + service.descriptionUrl();
+qDebug() << "Downloading service description from " << location;
 
     mError = QString();
 
@@ -83,14 +82,14 @@ void RootDevicePrivate::onDeviceDescriptionDownloadDone( KJob* job )
 
     if( job->error() )
     {
-        mError = i18n( "Failed to download from \"%1\": %2", mLocation.prettyUrl(), job->errorString() );
-kDebug() << mError;
+        mError = QObject::tr( "Failed to download from \"%1\": %2").arg( mLocation.toString(), job->errorString() );
+qDebug() << mError;
         success = false;
     }
     else
     {
         KIO::StoredTransferJob* storedTransferJob = static_cast<KIO::StoredTransferJob*>( job );
-kDebug()<< QString::fromAscii(storedTransferJob->data());
+qDebug()<< QString::fromAscii(storedTransferJob->data());
         success = parseDeviceDescription( p, storedTransferJob->data(), &mError );
     }
     emit p->deviceDescriptionDownloadDone( p, success );
@@ -104,18 +103,18 @@ void RootDevicePrivate::onServiceDescriptionDownloadDone( KJob* job )
     Service service = mServiceDownloadJob[job];
     mServiceDownloadJob.remove( job );
 
-    const KUrl location = mBaseUrl + service.descriptionUrl();
+    const QUrl location = mBaseUrl + service.descriptionUrl();
 
     if( job->error() )
     {
-        mError = i18n( "Failed to download service description from \"%1\": %2", location.prettyUrl(), job->errorString() );
-kDebug() << mError;
+        mError = QObject::tr( "Failed to download service description from \"%1\": %2").arg(location.toString(), job->errorString() );
+qDebug() << mError;
         success = false;
     }
     else
     {
         KIO::StoredTransferJob* storedTransferJob = static_cast<KIO::StoredTransferJob*>( job );
-kDebug()<< QString::fromAscii(storedTransferJob->data());
+qDebug()<< QString::fromAscii(storedTransferJob->data());
         success = true;//parseDescription( p, storedTransferJob->data(), &mError );
     }
     emit p->serviceDescriptionDownloadDone( service, success );
@@ -128,7 +127,7 @@ void RootDevicePrivate::onSoapReplyReceived( const QByteArray& reply, const QVar
     if( isError )
     {
         mError = mSoapAgent->lastError();
-kDebug() << "Error: " << mError;
+qDebug() << "Error: " << mError;
     }
     else
     {
@@ -138,7 +137,7 @@ kDebug() << "Error: " << mError;
             service.setReady();
             mDevice.addService( service );
 
-kDebug() << "Service added: " << service.type();
+qDebug() << "Service added: " << service.type();
         }
     }
 }

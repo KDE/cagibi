@@ -24,10 +24,9 @@
 
 // lib
 #include "rootdevice.h"
-// KDE
-#include <KUrl>
 // Qt
 #include <QtNetwork/QUdpSocket>
+#include <QtCore/QUrl>
 #include <QtCore/QStringList>
 // C
 #include <unistd.h>
@@ -39,7 +38,7 @@
 #include <netinet/ip.h>
 #endif
 
-#include <KDebug>
+#include <QtCore/QDebug>
 
 
 namespace UPnP
@@ -67,7 +66,7 @@ static void joinUPnPMCastGroup( int fd )
 #else
     if( setsockopt(fd,IPPROTO_IP,IP_ADD_MEMBERSHIP,(char *)&mreq,sizeof(ip_mreq)) < 0 )
 #endif
-kDebug() << "Failed to join multicast group " SSDP_BROADCAST_ADDRESS;
+qDebug() << "Failed to join multicast group " SSDP_BROADCAST_ADDRESS;
 }
 
 static void leaveUPnPMCastGroup( int fd )
@@ -84,7 +83,7 @@ static void leaveUPnPMCastGroup( int fd )
 #else
     if( setsockopt(fd,IPPROTO_IP,IP_DROP_MEMBERSHIP,(char *)&mreq,sizeof(ip_mreq)) < 0 )
 #endif
-kDebug() << "Failed to leave multicast group " SSDP_BROADCAST_ADDRESS;
+qDebug() << "Failed to leave multicast group " SSDP_BROADCAST_ADDRESS;
 }
 
 
@@ -100,7 +99,7 @@ SSDPWatcher::SSDPWatcher()
     for( int i = 0; i < 10; ++i )
     {
         if( ! mUdpSocket->bind(SSDPPortNumber+i,QUdpSocket::ShareAddress) )
-kDebug() << "Cannot bind to UDP port "<< SSDPPortNumber << ":" << mUdpSocket->errorString();
+qDebug() << "Cannot bind to UDP port "<< SSDPPortNumber << ":" << mUdpSocket->errorString();
         else
             break;
     }
@@ -112,7 +111,7 @@ kDebug() << "Cannot bind to UDP port "<< SSDPPortNumber << ":" << mUdpSocket->er
 
 void SSDPWatcher::discover()
 {
-kDebug() << "Trying to find UPnP devices on the local network";
+qDebug() << "Trying to find UPnP devices on the local network";
 
     // send a HTTP M-SEARCH message to 239.255.255.250:1900
     const char mSearchMessage[] =
@@ -148,7 +147,7 @@ RootDevice* SSDPWatcher::createDeviceFromResponse( const QByteArray& response )
         return 0;
 
     QString server;
-    KUrl location;
+    QUrl location;
     QString uuid;
     enum MessageType { SearchAnswer, Notification, UnknownMessage };
     enum DeviceState { Alive, ByeBye, OtherState };
@@ -164,27 +163,27 @@ RootDevice* SSDPWatcher::createDeviceFromResponse( const QByteArray& response )
 
         if( key == QLatin1String("LOCATION") )
         {
-kDebug()<<"LOCATION:"<<value;
+qDebug()<<"LOCATION:"<<value;
             location = value;
         }
         else if( key == QLatin1String("SERVER") )
         {
-kDebug()<<"SERVER:"<<value;
+qDebug()<<"SERVER:"<<value;
             server = value;
         }
         else if( key == QLatin1String("ST") ) // search type
         {
-kDebug()<<"ST:"<<value;
+qDebug()<<"ST:"<<value;
             messageType = SearchAnswer;
         }
         else if( key == QLatin1String("NT") ) // notification type
         {
-kDebug()<<"NT:"<<value;
+qDebug()<<"NT:"<<value;
             messageType = Notification;
         }
         else if( key == QLatin1String("NTS") ) // notification type s?
         {
-kDebug()<<"NTS:"<<value;
+qDebug()<<"NTS:"<<value;
             if( value == QLatin1String("ssdp:alive") )
                 deviceState = Alive;
             else if( value == QLatin1String("ssdp:byebye") )
@@ -194,7 +193,7 @@ kDebug()<<"NTS:"<<value;
 // TODO:         else if( key == QLatin1String("DATE") )
         else if( key == QLatin1String("USN") ) // unique service name
         {
-kDebug()<<"USN:"<<value;
+qDebug()<<"USN:"<<value;
             const int startIndex = 5;
             const int endIndex = value.lastIndexOf( "::" );
             int length = endIndex - startIndex;
@@ -206,30 +205,30 @@ kDebug()<<"USN:"<<value;
 
     if( uuid.isEmpty() )
     {
-kDebug()<<"No uuid found!";
+qDebug()<<"No uuid found!";
     }
     else if( location.isEmpty() )
     {
-kDebug()<<"No location found!";
+qDebug()<<"No location found!";
     }
     else if( deviceState == OtherState && messageType == Notification )
     {
-kDebug()<<"NTS neither alive nor byebye";
+qDebug()<<"NTS neither alive nor byebye";
     }
     else if( mDevices.contains(uuid) )
     {
-kDebug()<<"Already inserted:"<<uuid<<"!";
+qDebug()<<"Already inserted:"<<uuid<<"!";
     }
 #if 0
     else if( ! mBrowsedDeviceTypes.isEmpty() && ! mBrowsedDeviceTypes.contains(devicePrivate->type()) )
     {
-kDebug()<<"Not interested in:"<<devicePrivate->type();
+qDebug()<<"Not interested in:"<<devicePrivate->type();
         devicePrivate->setInvalid();
     }
 #endif
     else
     {
-kDebug() << "Detected Device:" << server << "UUID" << uuid;
+qDebug() << "Detected Device:" << server << "UUID" << uuid;
         // everything OK, make a new Device
         device = new RootDevice( server, location, uuid );
     }
@@ -249,7 +248,7 @@ void SSDPWatcher::onDeviceDescriptionDownloadDone( RootDevice* device, bool succ
     else
     {
         mDevices.insert( device->uuid(), device );
-kDebug()<< "Added:"<<device->name()<<device->uuid();
+qDebug()<< "Added:"<<device->name()<<device->uuid();
         emit deviceDiscovered( device );
     }
 }
@@ -263,7 +262,7 @@ void SSDPWatcher::onUdpSocketReadyRead()
     if( bytesRead == -1 )
         // TODO: error handling
         return;
-kDebug()<<QString::fromAscii(response);
+qDebug()<<QString::fromAscii(response);
     RootDevice* device = createDeviceFromResponse( response );
     if( device )
     {
@@ -279,7 +278,7 @@ kDebug()<<QString::fromAscii(response);
 void SSDPWatcher::onUdpSocketError( QAbstractSocket::SocketError error )
 {
     Q_UNUSED( error );
-kDebug() << "SSDPWatcher Error : " << mUdpSocket->errorString();
+qDebug() << "SSDPWatcher Error : " << mUdpSocket->errorString();
 }
 
 

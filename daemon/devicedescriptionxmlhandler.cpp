@@ -28,7 +28,7 @@
 // Qt
 #include <QtXml/QXmlAttributes>
 
-#include <KDebug>
+#include <QtCore/QDebug>
 
 namespace UPnP
 {
@@ -166,7 +166,7 @@ bool DeviceDescriptionXMLHandler::endElement( const QString& namespaceURI, const
     case DeviceElement:
         if( mStatusStack.top() == RootElement )
         {
-kDebug()<<mCurrentDevice.friendlyName();
+qDebug()<<mCurrentDevice.friendlyName();
             mRootDevice->setDevice( mCurrentDevice );
         }
         else
