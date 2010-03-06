@@ -72,6 +72,7 @@ bool DeviceDescriptionXMLHandler::startElement( const QString& namespaceURI, con
             result = false;
         break;
     case RootElement:
+//         ms:X_MS_SupportsWMDRM="true" attribute for Windows Media DRM 10 support
         if( localName == QLatin1String("device") )
             mStatusStack.push( DeviceElement );
         else if( localName == QLatin1String("URLBase") )
