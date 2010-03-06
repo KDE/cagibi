@@ -44,7 +44,10 @@ class ServicePrivate : public QSharedData
 
   public:
     const QString& type() const;
+    const QString& id() const;
+    const QString& descriptionUrl() const;
     const QString& controlUrl() const;
+    const QString& eventSubUrl() const;
     bool isReady() const;
 
   public:
@@ -68,7 +71,10 @@ inline ServicePrivate::ServicePrivate()
 }
 
 inline const QString& ServicePrivate::type()       const { return mType; }
+inline const QString& ServicePrivate::id() const { return mId; }
+inline const QString& ServicePrivate::descriptionUrl() const { return mDescriptionUrl; }
 inline const QString& ServicePrivate::controlUrl() const { return mControlUrl; }
+inline const QString& ServicePrivate::eventSubUrl() const { return mEventSubUrl; }
 inline bool ServicePrivate::isReady()              const { return mReady; }
 
 inline void ServicePrivate::setReady() { mReady = true; }

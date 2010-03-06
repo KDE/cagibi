@@ -54,7 +54,10 @@ class Service
 
   public:
     QString type() const;
+    QString id() const;
+    QString descriptionUrl() const;
     QString controlUrl() const;
+    QString eventSubUrl() const;
     bool isReady() const;
 
   public:

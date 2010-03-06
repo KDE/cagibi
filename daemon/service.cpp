@@ -47,7 +47,10 @@ Service::Service( const Service& other )
 
 QString Service::type() const { return d->type(); }
 bool Service::isReady() const { return d->isReady(); }
+QString Service::id() const { return d->id(); }
+QString Service::descriptionUrl() const { return d->descriptionUrl(); }
 QString Service::controlUrl() const { return d->controlUrl(); }
+QString Service::eventSubUrl() const { return d->eventSubUrl(); }
 
 void Service::setProperty( const QString& key, const QString& value )
 {
