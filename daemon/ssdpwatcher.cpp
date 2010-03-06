@@ -261,12 +261,12 @@ void SSDPWatcher::onUdpSocketReadyRead()
     if( bytesRead == -1 )
         // TODO: error handling
         return;
-
+kDebug()<<QString::fromAscii(response);
     RootDevice* device = createDeviceFromResponse( response );
     if( device )
     {
         connect( device, SIGNAL(deviceDescriptionDownloadDone( RootDevice*, bool )),
-                 SLOT(onDescriptionDownloadDone( RootDevice*, bool )) );
+                 SLOT(onDeviceDescriptionDownloadDone( RootDevice*, bool )) );
 
         device->startDeviceDescriptionDownload();
         mPendingDevices.insert( device );
