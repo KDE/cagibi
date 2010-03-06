@@ -52,6 +52,8 @@ QString Service::descriptionUrl() const { return d->descriptionUrl(); }
 QString Service::controlUrl() const { return d->controlUrl(); }
 QString Service::eventSubUrl() const { return d->eventSubUrl(); }
 
+Device Service::device() const { return d->device(); }
+
 void Service::setProperty( const QString& key, const QString& value )
 {
     d->setProperty( key, value );

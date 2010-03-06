@@ -40,6 +40,7 @@ class Service;
 class Device
 {
   friend class DevicePrivate;
+  friend class ServicePrivate;
 
   public:
     static bool isKey( const QString& key );

@@ -23,6 +23,8 @@
 #ifndef SERVICE_P_H
 #define SERVICE_P_H
 
+// lib
+#include "device_p.h"
 // Qt
 #include <QtCore/QString>
 #include <QtCore/QSharedData>
@@ -49,10 +51,12 @@ class ServicePrivate : public QSharedData
     const QString& controlUrl() const;
     const QString& eventSubUrl() const;
     bool isReady() const;
+    Device device() const;
 
   public:
     void setProperty( const QString& key, const QString& value );
     void setReady();
+    void setDevicePrivate( DevicePrivate* parentDevicePrivate );
 
   protected:
     QString mType;
@@ -62,11 +66,13 @@ class ServicePrivate : public QSharedData
     QString mEventSubUrl;
 
     bool mReady;
+    DevicePrivate* mDevicePrivate;
 };
 
 
 inline ServicePrivate::ServicePrivate()
-  : mReady( false )
+  : mReady( false ),
+    mDevicePrivate( 0 )
 {
 }
 
@@ -76,6 +82,10 @@ inline const QString& ServicePrivate::descriptionUrl() const { return mDescripti
 inline const QString& ServicePrivate::controlUrl() const { return mControlUrl; }
 inline const QString& ServicePrivate::eventSubUrl() const { return mEventSubUrl; }
 inline bool ServicePrivate::isReady()              const { return mReady; }
+inline Device ServicePrivate::device() const
+{
+    return mDevicePrivate ? Device(mDevicePrivate) : Device();
+}
 
 inline void ServicePrivate::setReady() { mReady = true; }
 
@@ -91,6 +101,10 @@ inline void ServicePrivate::setProperty( const QString& key, const QString& valu
         mDescriptionUrl = value;
     else if( key == keys[ServiceId] )
         mId = value;
+}
+inline void ServicePrivate::setDevicePrivate( DevicePrivate* devicePrivate )
+{
+    mDevicePrivate = devicePrivate;
 }
 
 

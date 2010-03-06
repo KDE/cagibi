@@ -33,10 +33,13 @@ class QString;
 namespace UPnP
 {
 class ServicePrivate;
+class Device;
 
 
 class Service
 {
+  friend class DevicePrivate;
+
   public:
     static bool isKey( const QString& key );
 
@@ -59,6 +62,8 @@ class Service
     QString controlUrl() const;
     QString eventSubUrl() const;
     bool isReady() const;
+
+    Device device() const;
 
   public:
     void setProperty( const QString& key, const QString& value );

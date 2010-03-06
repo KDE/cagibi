@@ -22,6 +22,9 @@
 
 #include "device_p.h"
 
+// lib
+#include "service_p.h"
+
 #include <KDebug>
 
 namespace UPnP
@@ -57,6 +60,7 @@ kDebug()<<type<<url;
     mSoapAgent->sendCommand( type, actionId, url, QVariant::fromValue<Service>(service) );
 #endif
 //     service.setReady();
+    service.d.data()->setDevicePrivate( this );
     mServices.append( service );
 }
 
