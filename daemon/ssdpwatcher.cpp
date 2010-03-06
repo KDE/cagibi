@@ -236,7 +236,7 @@ kDebug() << "Detected Device:" << server << "UUID" << uuid;
 }
 
 
-void SSDPWatcher::onDescriptionDownloadDone( RootDevice* device, bool success )
+void SSDPWatcher::onDeviceDescriptionDownloadDone( RootDevice* device, bool success )
 {
     mPendingDevices.remove( device );
 

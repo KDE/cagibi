@@ -35,7 +35,7 @@ namespace UPnP
 {
 class RootDevice;
 
-
+/// Simple Service Discovery Protocol
 class SSDPWatcher : public QObject
 {
   Q_OBJECT
@@ -62,7 +62,7 @@ class SSDPWatcher : public QObject
   protected Q_SLOTS:
     void onUdpSocketReadyRead();
     void onUdpSocketError( QAbstractSocket::SocketError error );
-    void onDescriptionDownloadDone( RootDevice* device, bool success );
+    void onDeviceDescriptionDownloadDone( RootDevice* device, bool success );
 
   protected:
     QHash<QString,RootDevice*> mDevices;
