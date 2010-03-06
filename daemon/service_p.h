@@ -53,7 +53,6 @@ class ServicePrivate : public QSharedData
 
   protected:
     QString mType;
-    int mTypeVersion;
     QString mId;
     QString mDescriptionUrl;
     QString mControlUrl;
