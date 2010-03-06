@@ -129,13 +129,13 @@ inline void DevicePrivate::setProperty( const QString& key, const QString& value
     else if( key == keys[ModelName] )
         mModelName = value;
     else if( key == keys[ModelNumber] )
-        mModelNumber == value;
+        mModelNumber = value;
     else if( key == keys[SerialNumber] )
-        mSerialNumber == value;
+        mSerialNumber = value;
     else if( key == keys[UDN] )
-        mUdn == value;
+        mUdn = value;
     else if( key == keys[PresentationUrl] )
-        mPresentationUrl == value;
+        mPresentationUrl = value;
 }
 inline void DevicePrivate::setParentDevicePrivate( DevicePrivate* parentDevicePrivate )
 {

@@ -80,7 +80,7 @@ inline void IconPrivate::setProperty( const QString& key, const QString& value )
     else if( key == keys[Depth] )
         mDepth = value.toInt();
     else if( key == keys[Url] )
-        mUrl == value;
+        mUrl = value;
 }
 
 inline bool IconPrivate::isKey( const QString& key )
