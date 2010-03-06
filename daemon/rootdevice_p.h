@@ -55,12 +55,12 @@ class RootDevicePrivate
     const QString& lastError() const;
 
   public:
-    void startDescriptionDownload();
+    void startDeviceDescriptionDownload();
     void setBaseUrl( const QString& baseUrl );
     void setDevice( const Device& device );
 
   public: // slots
-    void onDescriptionDownloadDone( KJob* job );
+    void onDeviceDescriptionDownloadDone( KJob* job );
     void onSoapReplyReceived( const QByteArray& reply, const QVariant& data );
 
   protected:

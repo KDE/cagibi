@@ -58,15 +58,15 @@ class RootDevice : public QObject
     QString lastError() const;
 
   public:
-    void startDescriptionDownload();
+    void startDeviceDescriptionDownload();
     void setBaseUrl( const QString& baseUrl );
     void setDevice( const Device& device );
 
   Q_SIGNALS:
-    void descriptionDownloadDone( RootDevice* device, bool success );
+    void deviceDescriptionDownloadDone( RootDevice* device, bool success );
 
   protected:
-    Q_PRIVATE_SLOT( d, void onDescriptionDownloadDone( KJob* job ) )
+    Q_PRIVATE_SLOT( d, void onDeviceDescriptionDownloadDone( KJob* job ) )
     Q_PRIVATE_SLOT( d, void onSoapReplyReceived( const QByteArray& reply, const QVariant& data ) )
 
   protected:

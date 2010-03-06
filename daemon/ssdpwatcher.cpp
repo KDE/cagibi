@@ -265,10 +265,10 @@ void SSDPWatcher::onUdpSocketReadyRead()
     RootDevice* device = createDeviceFromResponse( response );
     if( device )
     {
-        connect( device, SIGNAL(descriptionDownloadDone( RootDevice*, bool )),
+        connect( device, SIGNAL(deviceDescriptionDownloadDone( RootDevice*, bool )),
                  SLOT(onDescriptionDownloadDone( RootDevice*, bool )) );
 
-        device->startDescriptionDownload();
+        device->startDeviceDescriptionDownload();
         mPendingDevices.insert( device );
     }
 }

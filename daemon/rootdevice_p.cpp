@@ -54,7 +54,7 @@ static bool parseDescription( RootDevice* device, const QByteArray& data, QStrin
 }
 
 
-void RootDevicePrivate::startDescriptionDownload()
+void RootDevicePrivate::startDeviceDescriptionDownload()
 {
 kDebug() << "Downloading description from " << mLocation.prettyUrl();
 
@@ -64,7 +64,7 @@ kDebug() << "Downloading description from " << mLocation.prettyUrl();
     p->connect( job, SIGNAL(result( KJob* )), SLOT(onDescriptionDownloadDone( KJob* )) );
 }
 
-void RootDevicePrivate::onDescriptionDownloadDone( KJob* job )
+void RootDevicePrivate::onDeviceDescriptionDownloadDone( KJob* job )
 {
     bool success;
 
@@ -80,7 +80,7 @@ kDebug() << mError;
 kDebug()<< QString::fromAscii(storedTransferJob->data());
         success = parseDescription( p, storedTransferJob->data(), &mError );
     }
-    emit p->descriptionDownloadDone( p, success );
+    emit p->deviceDescriptionDownloadDone( p, success );
 }
 
 

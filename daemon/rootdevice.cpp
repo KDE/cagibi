@@ -41,9 +41,9 @@ KUrl RootDevice::location() const { return d->location(); }
 Device RootDevice::device() const { return d->device(); }
 QString RootDevice::lastError() const { return d->lastError(); }
 
-void RootDevice::startDescriptionDownload()
+void RootDevice::startDeviceDescriptionDownload()
 {
-    d->startDescriptionDownload();
+    d->startDeviceDescriptionDownload();
 }
 void RootDevice::setBaseUrl( const QString& baseUrl )
 {
