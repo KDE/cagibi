@@ -61,7 +61,7 @@ kDebug() << "Downloading description from " << mLocation.prettyUrl();
     mError = QString();
 
     KIO::Job* job = KIO::storedGet( mLocation, KIO::NoReload, KIO::Overwrite | KIO::HideProgressInfo );
-    p->connect( job, SIGNAL(result( KJob* )), SLOT(onDescriptionDownloadDone( KJob* )) );
+    p->connect( job, SIGNAL(result( KJob* )), SLOT(onDeviceDescriptionDownloadDone( KJob* )) );
 }
 
 void RootDevicePrivate::onDeviceDescriptionDownloadDone( KJob* job )
