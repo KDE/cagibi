@@ -35,7 +35,7 @@ class ServicePrivate : public QSharedData
 {
   public:
     static const char* const keys[];
-    enum { Type=0, ControlUrl, EventSubUrl, SCPDUrl, ServicePrivateId, KeyCount };
+    enum { Type=0, ControlUrl, EventSubUrl, SCPDUrl, ServiceId, KeyCount };
 
     static bool isKey( const QString& key );
 
@@ -84,7 +84,7 @@ inline void ServicePrivate::setProperty( const QString& key, const QString& valu
         mEventSubUrl = value;
     else if( key == keys[SCPDUrl] )
         mDescriptionUrl = value;
-    else if( key == keys[ServicePrivateId] )
+    else if( key == keys[ServiceId] )
         mId = value;
 }
 
