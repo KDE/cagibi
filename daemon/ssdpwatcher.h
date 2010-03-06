@@ -41,7 +41,7 @@ class SSDPWatcher : public QObject
   Q_OBJECT
 
   public:
-    SSDPWatcher();
+    explicit SSDPWatcher( QObject* parent = 0 );
 
     virtual ~SSDPWatcher();
 

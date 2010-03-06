@@ -87,8 +87,9 @@ qDebug() << "Failed to leave multicast group " SSDP_BROADCAST_ADDRESS;
 }
 
 
-SSDPWatcher::SSDPWatcher()
-  : mUdpSocket( new QUdpSocket(this) )
+SSDPWatcher::SSDPWatcher( QObject* parent )
+  : QObject( parent ),
+    mUdpSocket( new QUdpSocket(this) )
 {
     connect( mUdpSocket, SIGNAL(readyRead()),
              SLOT(onUdpSocketReadyRead()) );
