@@ -45,8 +45,12 @@
 namespace UPnP
 {
 
-static const int SSDPPortNumber = 1900;
-static const char SSDPBroadCastAddress[] = "239.255.255.250";
+#define SSDP_BROADCAST_ADDRESS "239.255.255.250"
+#define SSDP_PORT_NUMBER 1900
+#define SSDP_PORT "1900"
+
+static const int SSDPPortNumber = SSDP_PORT_NUMBER;
+static const char SSDPBroadCastAddress[] = SSDP_BROADCAST_ADDRESS;
 
 // copied from KTorrent UPnP, but is it needed?
 static void joinUPnPMCastGroup( int fd )
@@ -63,7 +67,7 @@ static void joinUPnPMCastGroup( int fd )
 #else
     if( setsockopt(fd,IPPROTO_IP,IP_ADD_MEMBERSHIP,(char *)&mreq,sizeof(ip_mreq)) < 0 )
 #endif
-kDebug() << "Failed to join multicast group 239.255.255.250";
+kDebug() << "Failed to join multicast group " SSDP_BROADCAST_ADDRESS;
 }
 
 static void leaveUPnPMCastGroup( int fd )
@@ -80,7 +84,7 @@ static void leaveUPnPMCastGroup( int fd )
 #else
     if( setsockopt(fd,IPPROTO_IP,IP_DROP_MEMBERSHIP,(char *)&mreq,sizeof(ip_mreq)) < 0 )
 #endif
-kDebug() << "Failed to leave multicast group 239.255.255.250";
+kDebug() << "Failed to leave multicast group " SSDP_BROADCAST_ADDRESS;
 }
 
 
@@ -113,12 +117,10 @@ kDebug() << "Trying to find UPnP devices on the local network";
     // send a HTTP M-SEARCH message to 239.255.255.250:1900
     const char mSearchMessage[] =
         "M-SEARCH * HTTP/1.1\r\n"
-        "HOST: 239.255.255.250:1900\r\n"
+        "HOST: "SSDP_BROADCAST_ADDRESS":"SSDP_PORT"\r\n"
         "ST:urn:schemas-upnp-org:device:upnp:rootdevice:1\r\n"
-//         "ST:urn:schemas-upnp-org:device:InternetGatewayDevice:1\r\n"
-//         "ST:urn:schemas-upnp-org:device:WANDevice:1\r\n"
         "MAN:\"ssdp:discover\"\r\n"
-        "MX:3\r\n"
+        "MX:3\r\n" // max number of seconds to wait for response
         "\r\n";
     const int mSearchMessageLength = sizeof(mSearchMessage) / sizeof(mSearchMessage[0]);
 
