@@ -26,7 +26,6 @@
 // Qt
 #include <QtCore/QObject>
 
-class KJob;
 class QUrl;
 
 
@@ -34,7 +33,6 @@ namespace UPnP
 {
 class Service;
 class Device;
-class SoapAgent;
 class RootDevicePrivate;
 
 
@@ -69,9 +67,9 @@ class RootDevice : public QObject
     void serviceDescriptionDownloadDone( const Service& service, bool success );
 
   protected:
-    Q_PRIVATE_SLOT( d, void onDeviceDescriptionDownloadDone( KJob* job ) )
-    Q_PRIVATE_SLOT( d, void onServiceDescriptionDownloadDone( KJob* job ) )
-    Q_PRIVATE_SLOT( d, void onSoapReplyReceived( const QByteArray& reply, const QVariant& data ) )
+    Q_PRIVATE_SLOT( d, void onDeviceDescriptionDownloadReply( QNetworkReply* reply ) )
+//     Q_PRIVATE_SLOT( d, void onServiceDescriptionDownloadDone( KJob* job ) )
+//     Q_PRIVATE_SLOT( d, void onSoapReplyReceived( const QByteArray& reply, const QVariant& data ) )
 
   protected:
     RootDevicePrivate* d;

@@ -3,7 +3,7 @@ include_directories(
 
 set( kupnpserver_LIB_SRCS
   devicedescriptionxmlhandler.cpp
-  soapagent.cpp
+#   soapagent.cpp
   icon_p.cpp
   icon.cpp
   service_p.cpp
@@ -25,7 +25,8 @@ kde4_add_executable( kupnpbrowser2  ${kupnpbrowser2_SRCS} )
 
 target_link_libraries( kupnpbrowser2
   kupnpserver
-  ${KDE4_KIO_LIBS}
+  ${QT_QTNETWORK_LIBRARY}
+  ${QT_QTXML_LIBRARY}
   ${QT_QTGUI_LIBRARY}
   ${QT_QTCORE_LIBRARY}
 )

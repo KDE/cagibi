@@ -27,12 +27,12 @@
 #include "rootdevice.h"
 #include "device.h"
 #include "service.h"
-#include "soapagent.h"
+// #include "soapagent.h"
 // Qt
-#include <QtCore/QObject>
+#include <QtNetwork/QNetworkAccessManager>
 #include <QtCore/QUrl>
 
-class KJob;
+class QNetworkReply;
 
 
 namespace UPnP
@@ -61,9 +61,9 @@ class RootDevicePrivate
     void setDevice( const Device& device );
 
   public: // slots
-    void onDeviceDescriptionDownloadDone( KJob* job );
-    void onServiceDescriptionDownloadDone( KJob* job );
-    void onSoapReplyReceived( const QByteArray& reply, const QVariant& data );
+    void onDeviceDescriptionDownloadReply( QNetworkReply* reply );
+//     void onServiceDescriptionDownloadDone( KJob* job );
+//     void onSoapReplyReceived( const QByteArray& reply, const QVariant& data );
 
   protected:
     RootDevice* p;
@@ -75,9 +75,10 @@ class RootDevicePrivate
 
     Device mDevice;
 
-    SoapAgent* mSoapAgent;
+//     SoapAgent* mSoapAgent;
+    QNetworkAccessManager* mNetworkAccessManager;
 
-    QHash<KJob*,Service> mServiceDownloadJob;
+//     QHash<KJob*,Service> mServiceDownloadJob;
 
     QString mError;
 };
@@ -90,11 +91,14 @@ inline RootDevicePrivate::RootDevicePrivate( const QString& name, const QUrl& lo
     mName( name ),
     mLocation( location ),
     mUuid( uuid ),
-    mSoapAgent( new SoapAgent(location,p) )
+//     mSoapAgent( new SoapAgent(location,p) ),
+    mNetworkAccessManager( new QNetworkAccessManager(p) )
 {
-    p->connect( mSoapAgent, SIGNAL(replyReceived( const QByteArray&, const QVariant& )),
-                SLOT(onSoapReplyReceived( const QByteArray&, const QVariant& )) );
+    p->connect( mNetworkAccessManager, SIGNAL(finished( QNetworkReply*) ),
+                SLOT(onDeviceDescriptionDownloadReply( QNetworkReply* )) );
 
+//     p->connect( mSoapAgent, SIGNAL(replyReceived( const QByteArray&, const QVariant& )),
+//                 SLOT(onSoapReplyReceived( const QByteArray&, const QVariant& )) );
 }
 
 inline const QString& RootDevicePrivate::name() const { return mName; }

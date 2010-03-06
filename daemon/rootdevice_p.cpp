@@ -25,9 +25,9 @@
 // server
 #include "devicedescriptionxmlhandler.h"
 #include "service.h"
-// KDE
-#include <KIO/Job>
-#include <KIO/NetAccess>
+// Qt
+#include <QtNetwork/QNetworkRequest>
+#include <QtNetwork/QNetworkReply>
 
 #include <QtCore/QDebug>
 
@@ -60,8 +60,7 @@ qDebug() << "Downloading description from " << mLocation;
 
     mError = QString();
 
-    KIO::Job* job = KIO::storedGet( mLocation, KIO::NoReload, KIO::Overwrite | KIO::HideProgressInfo );
-    p->connect( job, SIGNAL(result( KJob* )), SLOT(onDeviceDescriptionDownloadDone( KJob* )) );
+    mNetworkAccessManager->get( QNetworkRequest(mLocation) );
 }
 
 void RootDevicePrivate::startServiceDescriptionDownload( const Service& service )
@@ -71,31 +70,33 @@ qDebug() << "Downloading service description from " << location;
 
     mError = QString();
 
-    KIO::Job* job = KIO::storedGet( location, KIO::NoReload, KIO::Overwrite | KIO::HideProgressInfo );
-    p->connect( job, SIGNAL(result( KJob* )), SLOT(onServiceDescriptionDownloadDone( KJob* )) );
-    mServiceDownloadJob[job] = service;
+//     KIO::Job* job = KIO::storedGet( location, KIO::NoReload, KIO::Overwrite | KIO::HideProgressInfo );
+//     p->connect( job, SIGNAL(result( KJob* )), SLOT(onServiceDescriptionDownloadDone( KJob* )) );
+//     mServiceDownloadJob[job] = service;
 }
 
-void RootDevicePrivate::onDeviceDescriptionDownloadDone( KJob* job )
+void RootDevicePrivate::onDeviceDescriptionDownloadReply( QNetworkReply* reply )
 {
     bool success;
 
-    if( job->error() )
+    if( reply->error() != QNetworkReply::NoError )
     {
-        mError = QObject::tr( "Failed to download from \"%1\": %2").arg( mLocation.toString(), job->errorString() );
+        mError = QObject::tr( "Failed to download from \"%1\": %2").arg( mLocation.toString(), reply->error() );
 qDebug() << mError;
         success = false;
     }
     else
     {
-        KIO::StoredTransferJob* storedTransferJob = static_cast<KIO::StoredTransferJob*>( job );
-qDebug()<< QString::fromAscii(storedTransferJob->data());
-        success = parseDeviceDescription( p, storedTransferJob->data(), &mError );
+        const QByteArray deviceDescriptionData = reply->readAll();
+qDebug()<< QString::fromAscii(deviceDescriptionData);
+        success = parseDeviceDescription( p, deviceDescriptionData, &mError );
     }
+    reply->deleteLater();
+
     emit p->deviceDescriptionDownloadDone( p, success );
 }
 
-
+#if 0
 void RootDevicePrivate::onServiceDescriptionDownloadDone( KJob* job )
 {
     bool success;
@@ -119,8 +120,9 @@ qDebug()<< QString::fromAscii(storedTransferJob->data());
     }
     emit p->serviceDescriptionDownloadDone( service, success );
 }
+#endif
 
-
+#if 0
 void RootDevicePrivate::onSoapReplyReceived( const QByteArray& reply, const QVariant& data )
 {
     const bool isError = reply.isEmpty();
@@ -141,7 +143,7 @@ qDebug() << "Service added: " << service.type();
         }
     }
 }
-
+#endif
 
 RootDevicePrivate::~RootDevicePrivate() {}
 

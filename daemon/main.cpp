@@ -25,11 +25,8 @@
 #include "rootdevice.h"
 #include "device.h"
 #include "service.h"
-// KDE
-#include <KApplication>
-#include <KCmdLineArgs>
-#include <KAboutData>
 // Qt
+#include <QtCore/QCoreApplication>
 #include <QtCore/QTextStream>
 #include <QtCore/QTimer>
 
@@ -55,9 +52,9 @@ void operator<<( QTextStream& out, const UPnP::Device& device )
 
 int main( int argc, char* argv[] )
 {
-    KAboutData aboutData( "kupnpbrowser2", "KUpnpBrowser2", ki18n(""), "", ki18n("") );
-    KCmdLineArgs::init( argc, argv, &aboutData );
-    KApplication programCore;
+//     KAboutData aboutData( "kupnpbrowser2", "KUpnpBrowser2", ki18n(""), "", ki18n("") );
+//     KCmdLineArgs::init( argc, argv, &aboutData );
+    QCoreApplication programCore( argc, argv );
 
     UPnP::SSDPWatcher deviceBrowser;
     deviceBrowser.discover();
