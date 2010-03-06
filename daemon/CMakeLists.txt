@@ -26,7 +26,6 @@ kde4_add_executable( kupnpbrowser2  ${kupnpbrowser2_SRCS} )
 target_link_libraries( kupnpbrowser2
   kupnpserver
   ${KDE4_KIO_LIBS}
-  ${KDE4_KDEUI_LIBS}
   ${QT_QTGUI_LIBRARY}
   ${QT_QTCORE_LIBRARY}
 )
