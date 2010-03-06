@@ -24,6 +24,7 @@
 
 // server
 #include "devicedescriptionxmlhandler.h"
+#include "service.h"
 // KDE
 #include <KIO/Job>
 #include <KIO/NetAccess>
@@ -34,7 +35,7 @@
 namespace UPnP
 {
 
-static bool parseDescription( RootDevice* device, const QByteArray& data, QString* error )
+static bool parseDeviceDescription( RootDevice* device, const QByteArray& data, QString* error )
 {
     bool result = true;
 
@@ -64,6 +65,18 @@ kDebug() << "Downloading description from " << mLocation.prettyUrl();
     p->connect( job, SIGNAL(result( KJob* )), SLOT(onDeviceDescriptionDownloadDone( KJob* )) );
 }
 
+void RootDevicePrivate::startServiceDescriptionDownload( const Service& service )
+{
+    const KUrl location = mBaseUrl + service.descriptionUrl();
+kDebug() << "Downloading service description from " << location.prettyUrl();
+
+    mError = QString();
+
+    KIO::Job* job = KIO::storedGet( location, KIO::NoReload, KIO::Overwrite | KIO::HideProgressInfo );
+    p->connect( job, SIGNAL(result( KJob* )), SLOT(onServiceDescriptionDownloadDone( KJob* )) );
+    mServiceDownloadJob[job] = service;
+}
+
 void RootDevicePrivate::onDeviceDescriptionDownloadDone( KJob* job )
 {
     bool success;
@@ -78,9 +91,34 @@ kDebug() << mError;
     {
         KIO::StoredTransferJob* storedTransferJob = static_cast<KIO::StoredTransferJob*>( job );
 kDebug()<< QString::fromAscii(storedTransferJob->data());
-        success = parseDescription( p, storedTransferJob->data(), &mError );
+        success = parseDeviceDescription( p, storedTransferJob->data(), &mError );
     }
     emit p->deviceDescriptionDownloadDone( p, success );
+}
+
+
+void RootDevicePrivate::onServiceDescriptionDownloadDone( KJob* job )
+{
+    bool success;
+
+    Service service = mServiceDownloadJob[job];
+    mServiceDownloadJob.remove( job );
+
+    const KUrl location = mBaseUrl + service.descriptionUrl();
+
+    if( job->error() )
+    {
+        mError = i18n( "Failed to download service description from \"%1\": %2", location.prettyUrl(), job->errorString() );
+kDebug() << mError;
+        success = false;
+    }
+    else
+    {
+        KIO::StoredTransferJob* storedTransferJob = static_cast<KIO::StoredTransferJob*>( job );
+kDebug()<< QString::fromAscii(storedTransferJob->data());
+        success = true;//parseDescription( p, storedTransferJob->data(), &mError );
+    }
+    emit p->serviceDescriptionDownloadDone( service, success );
 }
 
 

@@ -26,6 +26,7 @@
 // lib
 #include "rootdevice.h"
 #include "device.h"
+#include "service.h"
 #include "soapagent.h"
 // KDE
 #include <KUrl>
@@ -56,11 +57,13 @@ class RootDevicePrivate
 
   public:
     void startDeviceDescriptionDownload();
+    void startServiceDescriptionDownload( const Service& service );
     void setBaseUrl( const QString& baseUrl );
     void setDevice( const Device& device );
 
   public: // slots
     void onDeviceDescriptionDownloadDone( KJob* job );
+    void onServiceDescriptionDownloadDone( KJob* job );
     void onSoapReplyReceived( const QByteArray& reply, const QVariant& data );
 
   protected:
@@ -74,6 +77,8 @@ class RootDevicePrivate
     Device mDevice;
 
     SoapAgent* mSoapAgent;
+
+    QHash<KJob*,Service> mServiceDownloadJob;
 
     QString mError;
 };

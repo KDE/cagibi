@@ -45,6 +45,11 @@ void RootDevice::startDeviceDescriptionDownload()
 {
     d->startDeviceDescriptionDownload();
 }
+void RootDevice::startServiceDescriptionDownload( const Service& service )
+{
+    d->startServiceDescriptionDownload( service );
+}
+
 void RootDevice::setBaseUrl( const QString& baseUrl )
 {
     d->setBaseUrl( baseUrl );

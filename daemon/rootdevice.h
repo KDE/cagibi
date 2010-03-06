@@ -32,6 +32,7 @@ class KUrl;
 
 namespace UPnP
 {
+class Service;
 class Device;
 class SoapAgent;
 class RootDevicePrivate;
@@ -59,14 +60,17 @@ class RootDevice : public QObject
 
   public:
     void startDeviceDescriptionDownload();
+    void startServiceDescriptionDownload( const Service& service );
     void setBaseUrl( const QString& baseUrl );
     void setDevice( const Device& device );
 
   Q_SIGNALS:
     void deviceDescriptionDownloadDone( RootDevice* device, bool success );
+    void serviceDescriptionDownloadDone( const Service& service, bool success );
 
   protected:
     Q_PRIVATE_SLOT( d, void onDeviceDescriptionDownloadDone( KJob* job ) )
+    Q_PRIVATE_SLOT( d, void onServiceDescriptionDownloadDone( KJob* job ) )
     Q_PRIVATE_SLOT( d, void onSoapReplyReceived( const QByteArray& reply, const QVariant& data ) )
 
   protected:
