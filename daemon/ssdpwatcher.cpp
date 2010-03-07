@@ -118,7 +118,8 @@ qDebug() << "Trying to find UPnP devices on the local network";
     const char mSearchMessage[] =
         "M-SEARCH * HTTP/1.1\r\n"
         "HOST: "SSDP_BROADCAST_ADDRESS":"SSDP_PORT"\r\n"
-        "ST:urn:schemas-upnp-org:device:upnp:rootdevice:1\r\n"
+//         "ST:urn:schemas-upnp-org:device:upnp:rootdevice:1\r\n"
+        "ST: ssdp:all\r\n"
         "MAN:\"ssdp:discover\"\r\n"
         "MX:3\r\n" // max number of seconds to wait for response
         "\r\n";
@@ -154,6 +155,7 @@ RootDevice* SSDPWatcher::createDeviceFromResponse( const QByteArray& response )
     enum DeviceState { Alive, ByeBye, OtherState };
     DeviceState deviceState = OtherState;
     MessageType messageType = UnknownMessage;
+    int maxAge = 0; // in seconds
 
     // read all lines and try to find the server and location fields
     foreach( const QString& line, lines )
@@ -190,7 +192,14 @@ qDebug()<<"NTS:"<<value;
             else if( value == QLatin1String("ssdp:byebye") )
                 deviceState = ByeBye;
         }
-// TODO:         else if( key == QLatin1String("CACHE-CONTROL") )
+        else if( key == QLatin1String("CACHE-CONTROL") )
+        {
+            const int separatorIndex = line.indexOf( '=' );
+            const QString key = line.left( separatorIndex ).trimmed().toUpper();
+            const QString value = line.mid( separatorIndex+1 ).trimmed();
+            if( key == QLatin1String("MAX-AGE") )
+                maxAge = value.toInt();
+        }
 // TODO:         else if( key == QLatin1String("DATE") )
         else if( key == QLatin1String("USN") ) // unique service name
         {
