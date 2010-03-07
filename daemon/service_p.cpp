@@ -31,7 +31,7 @@ const char* const ServicePrivate::keys[] =
     "serviceType",
     "controlURL",
     "eventSubURL",
-    "SCPDURL",
+    "SCPDURL", //  Service Control Protocol Document
     "serviceId"
 };
 
