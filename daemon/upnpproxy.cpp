@@ -32,6 +32,33 @@
 namespace Cagibi
 {
 
+static void fillMap( DeviceTypeMap& map, const Device& device )
+{
+    map.insert( device.udn(), device.type() );
+    foreach( const Cagibi::Device& subDevice, device.devices() )
+        fillMap( map, subDevice );
+}
+
+static const Device* find( const Device& device, const QString& udn )
+{
+    const Device* result = 0;
+
+    if( device.udn() == udn )
+        result = &device;
+    else
+    {
+        foreach( const Cagibi::Device& subDevice, device.devices() )
+        {
+            result = find( subDevice, udn );
+            if( result )
+                break;
+        }
+    }
+
+    return result;
+}
+
+
 UPnPProxy::UPnPProxy( QObject* parent )
   : QObject( parent ),
     mSsdpWatcher( new SSDPWatcher(this) )
@@ -52,12 +79,38 @@ UPnPProxy::UPnPProxy( QObject* parent )
 
 DeviceTypeMap UPnPProxy::allDevices() const
 {
-    return DeviceTypeMap();
+    DeviceTypeMap result;
+
+    const QList<RootDevice*> rootDevices = mSsdpWatcher->devices();
+
+    foreach( RootDevice* rootDevice, rootDevices )
+    {
+        const Device device = rootDevice->device();
+        fillMap( result, device );
+    }
+
+    return result;
 }
 
 Device UPnPProxy::deviceDetails( const QString& udn ) const
 {
-    return Device();
+    Device result;
+
+    const QList<RootDevice*> rootDevices = mSsdpWatcher->devices();
+
+    foreach( RootDevice* rootDevice, rootDevices )
+    {
+        const Device device = rootDevice->device();
+
+        const Device* match = find( device, udn );
+        if( match )
+        {
+            result = *match;
+            break;
+        }
+    }
+
+    return result;
 }
 
 void UPnPProxy::onDeviceDiscovered( RootDevice* rootDevice )
@@ -65,7 +118,7 @@ void UPnPProxy::onDeviceDiscovered( RootDevice* rootDevice )
     DeviceTypeMap devices;
 
     const Device device = rootDevice->device();
-    devices.insert( device.udn(), device.type() );
+    fillMap( devices, device );
 
     emit devicesAdded( devices );
 }
@@ -75,7 +128,7 @@ void UPnPProxy::onDeviceRemoved( RootDevice* rootDevice )
     DeviceTypeMap devices;
 
     const Device device = rootDevice->device();
-    devices.insert( device.udn(), device.type() );
+    fillMap( devices, device );
 
     emit devicesRemoved( devices );
 }
