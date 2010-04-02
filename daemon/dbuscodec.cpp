@@ -48,14 +48,14 @@ QDBusArgument& operator<<( QDBusArgument& argument, const Cagibi::Device& device
 //     const QString upc() const;
              << devicePrivate->presentationUrl();
 
-    argument << ( devicePrivate->hasParentDevice() ?
-        devicePrivate->parentDevice().udn() :
-        QString() );
-
     Cagibi::RootDevice* rootDevice = devicePrivate->rootDevice();
     QUrl location = rootDevice ? rootDevice->location() : QUrl();
     argument << location.host()
              << location.port();
+
+    argument << ( devicePrivate->hasParentDevice() ?
+        devicePrivate->parentDevice().udn() :
+        QString() );
 
 //     const QList<Icon>& icons() const;
 //     const QList<Service>& services() const;
