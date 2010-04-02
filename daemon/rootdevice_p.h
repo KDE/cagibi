@@ -1,5 +1,5 @@
 /*
-    This file is part of the KUPnP library, part of the KDE project.
+    This file is part of the Cagibi library, part of the KDE project.
 
     Copyright 2009-2010 Friedrich W. H. Kossebau <kossebau@kde.org>
 
@@ -35,7 +35,7 @@
 class QNetworkReply;
 
 
-namespace UPnP
+namespace Cagibi
 {
 class SoapAgent;
 

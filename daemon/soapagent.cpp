@@ -1,5 +1,5 @@
 /*
-    This file is part of the KUPnP library, part of the KDE project.
+    This file is part of the Cagibi library, part of the KDE project.
 
     Copyright 2009-2010 Friedrich W. H. Kossebau <kossebau@kde.org>
 
@@ -30,7 +30,7 @@
 
 #include <QtCore/QDebug>
 
-namespace UPnP
+namespace Cagibi
 {
 static const int defaultSoapPort = 80;
 
@@ -102,7 +102,7 @@ void SoapAgent::sendCommand( const QString& type, const QString& actionId, const
     KIO::TransferJob* postCommandJob = KIO::http_post( address, command.toAscii(), KIO::HideProgressInfo );
 
     postCommandJob->addMetaData( "content-type",     QString::fromLatin1("text/xml"));
-    postCommandJob->addMetaData( "UserAgent",        QString::fromLatin1("KUPnP"));
+    postCommandJob->addMetaData( "UserAgent",        QString::fromLatin1("Cagibi"));
     postCommandJob->addMetaData( "customHTTPHeader", QString::fromLatin1("SOAPAction: ") + action );
 
     mWriteBufferPerJob[postCommandJob] = QByteArray();

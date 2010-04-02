@@ -1,5 +1,5 @@
 /*
-    This file is part of the KUPnP library, part of the KDE project.
+    This file is part of the Cagibi library, part of the KDE project.
 
     Copyright 2009 Friedrich W. H. Kossebau <kossebau@kde.org>
 
@@ -24,7 +24,7 @@
 #include "device_p.h"
 
 
-namespace UPnP
+namespace Cagibi
 {
 bool Device::isKey( const QString& key ) { return DevicePrivate::isKey(key); }
 
@@ -60,11 +60,16 @@ QList<Device> Device::devices() const { return d->devices(); }
 
 bool Device::hasParentDevice() const { return d->hasParentDevice(); }
 Device Device::parentDevice() const { return d->parentDevice(); }
+RootDevice* Device::rootDevice() const { return d->rootDevice(); }
 
 void Device::setProperty( const QString& key, const QString& value )
 {
     d->setProperty( key, value );
 };
+void Device::setRootDevice( RootDevice* rootDevice )
+{
+    d->setRootDevice( rootDevice );
+}
 
 void Device::addDevice( const Device& device )
 {

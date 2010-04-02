@@ -1,5 +1,5 @@
 /*
-    This file is part of the KUPnP library, part of the KDE project.
+    This file is part of the Cagibi library, part of the KDE project.
 
     Copyright 2010 Friedrich W. H. Kossebau <kossebau@kde.org>
 
@@ -31,11 +31,11 @@
 
 class QDBusArgument;
 QDBusArgument& operator<<( QDBusArgument& argument,
-                           const UPnP::Device& device );
+                           const Cagibi::Device& device );
 const QDBusArgument& operator>>( const QDBusArgument& argument,
-                                 UPnP::Device& device );
+                                 Cagibi::Device& device );
 
-Q_DECLARE_METATYPE( UPnP::Device )
-Q_DECLARE_METATYPE( QVector<UPnP::Device> )
+Q_DECLARE_METATYPE( Cagibi::Device )
+Q_DECLARE_METATYPE( QVector<Cagibi::Device> )
 
 #endif

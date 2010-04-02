@@ -1,5 +1,5 @@
 /*
-    This file is part of the KUPnP library, part of the KDE project.
+    This file is part of the Cagibi library, part of the KDE project.
 
     Copyright 2010 Friedrich W. H. Kossebau <kossebau@kde.org>
 
@@ -24,13 +24,15 @@
 
 // network
 #include "device_p.h"
+#include "rootdevice.h"
 // Qt
 #include <QtDBus/QDBusArgument>
+#include <QtCore/QUrl>
 
 
-QDBusArgument& operator<<( QDBusArgument& argument, const UPnP::Device& device )
+QDBusArgument& operator<<( QDBusArgument& argument, const Cagibi::Device& device )
 {
-    const UPnP::DevicePrivate* devicePrivate = device.d.constData();
+    const Cagibi::DevicePrivate* devicePrivate = device.d.constData();
 
     argument.beginStructure();
 
@@ -50,6 +52,11 @@ QDBusArgument& operator<<( QDBusArgument& argument, const UPnP::Device& device )
         devicePrivate->parentDevice().udn() :
         QString() );
 
+    Cagibi::RootDevice* rootDevice = devicePrivate->rootDevice();
+    QUrl location = rootDevice->location();
+    argument << location.host()
+             << location.port();
+
 //     const QList<Icon>& icons() const;
 //     const QList<Service>& services() const;
 //     const QList<Device>& devices() const;
@@ -60,9 +67,9 @@ QDBusArgument& operator<<( QDBusArgument& argument, const UPnP::Device& device )
 }
 
 const QDBusArgument& operator>>( const QDBusArgument& argument,
-                                 UPnP::Device& device )
+                                 Cagibi::Device& device )
 {
-    UPnP::DevicePrivate* devicePrivate = device.d.data();
+    Cagibi::DevicePrivate* devicePrivate = device.d.data();
 
     argument.beginStructure();
 

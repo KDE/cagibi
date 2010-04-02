@@ -1,5 +1,5 @@
 /*
-    This file is part of the KUPnP library, part of the KDE project.
+    This file is part of the Cagibi library, part of the KDE project.
 
     Copyright 2009 Friedrich W. H. Kossebau <kossebau@kde.org>
 
@@ -24,7 +24,7 @@
 #include "service_p.h"
 
 
-namespace UPnP
+namespace Cagibi
 {
 bool Service::isKey( const QString& key ) { return ServicePrivate::isKey(key); }
 

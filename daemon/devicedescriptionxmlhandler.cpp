@@ -1,5 +1,5 @@
 /*
-    This file is part of the KUPnP library, part of the KDE project.
+    This file is part of the Cagibi library, part of the KDE project.
 
     Copyright 2009-2010 Friedrich W. H. Kossebau <kossebau@kde.org>
 
@@ -30,7 +30,7 @@
 
 #include <QtCore/QDebug>
 
-namespace UPnP
+namespace Cagibi
 {
 
 DeviceDescriptionXMLHandler::DeviceDescriptionXMLHandler( RootDevice* device )
@@ -164,6 +164,7 @@ bool DeviceDescriptionXMLHandler::endElement( const QString& namespaceURI, const
         mCurrentService = Service();
         break;
     case DeviceElement:
+        mCurrentDevice.setRootDevice( mRootDevice );
         if( mStatusStack.top() == RootElement )
         {
 qDebug()<<mCurrentDevice.friendlyName();

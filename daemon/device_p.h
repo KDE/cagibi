@@ -1,5 +1,5 @@
 /*
-    This file is part of the KUPnP library, part of the KDE project.
+    This file is part of the Cagibi library, part of the KDE project.
 
     Copyright 2009-2010 Friedrich W. H. Kossebau <kossebau@kde.org>
 
@@ -32,13 +32,13 @@
 #include <QtCore/QSharedData>
 
 
-namespace UPnP
+namespace Cagibi
 {
 
 class DevicePrivate : public QSharedData
 {
   friend const QDBusArgument& ::operator>>( const QDBusArgument& argument,
-                                            UPnP::Device& device );
+                                            Cagibi::Device& device );
 
   public:
     static const char* const keys[];
@@ -69,9 +69,12 @@ class DevicePrivate : public QSharedData
     bool hasParentDevice() const;
     Device parentDevice() const;
 
+    RootDevice* rootDevice() const;
+
   public:
     void setProperty( const QString& key, const QString& value );
     void setParentDevicePrivate( DevicePrivate* parentDevicePrivate );
+    void setRootDevice( RootDevice* rootDevice );
 
     void addDevice( const Device& device );
     void addService( const Service& service );
@@ -97,10 +100,11 @@ class DevicePrivate : public QSharedData
     QList<Device> mDevices;
 
     DevicePrivate* mParentDevicePrivate;
+    RootDevice* mRootDevice;
 };
 
 
-inline DevicePrivate::DevicePrivate() : mParentDevicePrivate( 0 ) {}
+inline DevicePrivate::DevicePrivate() : mParentDevicePrivate( 0 ), mRootDevice( 0 ) {}
 inline const QString& DevicePrivate::type() const { return mType; }
 inline const QString& DevicePrivate::friendlyName() const { return mFriendlyName; }
 inline const QString& DevicePrivate::manufacturerName() const { return mManufacturerName; }
@@ -118,6 +122,7 @@ inline Device DevicePrivate::parentDevice() const
 {
     return mParentDevicePrivate ? Device(mParentDevicePrivate) : Device();
 }
+inline RootDevice* DevicePrivate::rootDevice() const { return mRootDevice; }
 
 inline void DevicePrivate::setProperty( const QString& key, const QString& value )
 {
@@ -143,6 +148,10 @@ inline void DevicePrivate::setProperty( const QString& key, const QString& value
 inline void DevicePrivate::setParentDevicePrivate( DevicePrivate* parentDevicePrivate )
 {
     mParentDevicePrivate = parentDevicePrivate;
+}
+inline void DevicePrivate::setRootDevice( RootDevice* rootDevice )
+{
+    mRootDevice = rootDevice;
 }
 
 

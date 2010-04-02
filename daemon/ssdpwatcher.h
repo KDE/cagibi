@@ -1,5 +1,5 @@
 /*
-    This file is part of the KUPnP library, part of the KDE project.
+    This file is part of the Cagibi library, part of the KDE project.
 
     Copyright 2009-2010 Friedrich W. H. Kossebau <kossebau@kde.org>
 
@@ -31,7 +31,7 @@
 class QUdpSocket;
 
 
-namespace UPnP
+namespace Cagibi
 {
 class RootDevice;
 
@@ -53,8 +53,8 @@ class SSDPWatcher : public QObject
     void discover();
 
   Q_SIGNALS:
-    void deviceDiscovered( UPnP::RootDevice* device );
-    void deviceRemoved( UPnP::RootDevice* device );
+    void deviceDiscovered( Cagibi::RootDevice* device );
+    void deviceRemoved( Cagibi::RootDevice* device );
 
   protected:
     RootDevice* createDeviceFromResponse( const QByteArray& response );

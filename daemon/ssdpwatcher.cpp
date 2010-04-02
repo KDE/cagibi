@@ -1,5 +1,5 @@
 /*
-    This file is part of the KUPnP library, part of the KDE project.
+    This file is part of the Cagibi library, part of the KDE project.
 
     Copyright 2009-2010 Friedrich W. H. Kossebau <kossebau@kde.org>
 
@@ -41,7 +41,7 @@
 #include <QtCore/QDebug>
 
 
-namespace UPnP
+namespace Cagibi
 {
 
 #define SSDP_BROADCAST_ADDRESS "239.255.255.250"
@@ -112,7 +112,7 @@ qDebug() << "Cannot bind to UDP port "<< SSDPPortNumber << ":" << mUdpSocket->er
 
 void SSDPWatcher::discover()
 {
-qDebug() << "Trying to find UPnP devices on the local network";
+qDebug() << "Trying to find Cagibi devices on the local network";
 
     // send a HTTP M-SEARCH message to 239.255.255.250:1900
     const char mSearchMessage[] =

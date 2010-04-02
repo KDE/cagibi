@@ -1,5 +1,5 @@
 /*
-    This file is part of the KUPnP library, part of the KDE project.
+    This file is part of the Cagibi library, part of the KDE project.
 
     Copyright 2009-2010 Friedrich W. H. Kossebau <kossebau@kde.org>
 
@@ -26,18 +26,19 @@
 // Qt
 #include <QtCore/QExplicitlySharedDataPointer>
 
-namespace UPnP { class Device; }
+namespace Cagibi { class Device; }
 class QString;
 template< class C > class QList;
 class QDBusArgument;
 extern QDBusArgument& operator<<( QDBusArgument& argument,
-                                  const UPnP::Device& device );
+                                  const Cagibi::Device& device );
 extern const QDBusArgument& operator>>( const QDBusArgument& argument,
-                                        UPnP::Device& device );
+                                        Cagibi::Device& device );
 
 
-namespace UPnP
+namespace Cagibi
 {
+class RootDevice;
 class DevicePrivate;
 class Icon;
 class Service;
@@ -48,9 +49,9 @@ class Device
   friend class DevicePrivate;
   friend class ServicePrivate;
   friend QDBusArgument& ::operator<<( QDBusArgument& argument,
-                                      const UPnP::Device& device );
+                                      const Cagibi::Device& device );
   friend const QDBusArgument& ::operator>>( const QDBusArgument& argument,
-                                            UPnP::Device& device );
+                                            Cagibi::Device& device );
 
   public:
     static bool isKey( const QString& key );
@@ -87,8 +88,11 @@ class Device
     bool hasParentDevice() const;
     Device parentDevice() const;
 
+    RootDevice* rootDevice() const;
+
   public:
     void setProperty( const QString& key, const QString& value );
+    void setRootDevice( RootDevice* rootDevice );
 
     void addDevice( const Device& device );
     void addService( const Service& service );
