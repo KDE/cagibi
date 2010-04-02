@@ -37,6 +37,9 @@ namespace UPnP
 
 class DevicePrivate : public QSharedData
 {
+  friend const QDBusArgument& ::operator>>( const QDBusArgument& argument,
+                                            UPnP::Device& device );
+
   public:
     static const char* const keys[];
     enum { Type=0, FriendlyName, Manufacturer, ModelDescription, ModelName, ModelNumber, SerialNumber, UDN, PresentationUrl, KeyCount };

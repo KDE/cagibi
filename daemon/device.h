@@ -26,8 +26,14 @@
 // Qt
 #include <QtCore/QExplicitlySharedDataPointer>
 
+namespace UPnP { class Device; }
 class QString;
 template< class C > class QList;
+class QDBusArgument;
+extern QDBusArgument& operator<<( QDBusArgument& argument,
+                                  const UPnP::Device& device );
+extern const QDBusArgument& operator>>( const QDBusArgument& argument,
+                                        UPnP::Device& device );
 
 
 namespace UPnP
@@ -41,6 +47,10 @@ class Device
 {
   friend class DevicePrivate;
   friend class ServicePrivate;
+  friend QDBusArgument& ::operator<<( QDBusArgument& argument,
+                                      const UPnP::Device& device );
+  friend const QDBusArgument& ::operator>>( const QDBusArgument& argument,
+                                            UPnP::Device& device );
 
   public:
     static bool isKey( const QString& key );
