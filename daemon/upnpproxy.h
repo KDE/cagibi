@@ -52,10 +52,6 @@ class UPnPProxy : public QObject
     DeviceTypeMap allDevices() const;
     Device deviceDetails( const QString& udn ) const;
 
-//     Mollet::NetDevice deviceData( const QString& hostAddress );
-//     Mollet::NetService serviceData( const QString& hostAddress, const QString& serviceName, const QString& serviceType );
-//     Mollet::NetDeviceList deviceDataList();
-//     Mollet::NetServiceList serviceDataList( const QString& hostAddress );
   Q_SIGNALS:
     void devicesAdded( const DeviceTypeMap& devices );
     void devicesRemoved( const DeviceTypeMap& devices );
