@@ -24,21 +24,61 @@
 
 // program
 #include "upnpproxydbusadaptor.h"
+#include "ssdpwatcher.h"
+#include "rootdevice.h"
+#include "device.h"
 
 
 namespace Cagibi
 {
 
 UPnPProxy::UPnPProxy( QObject* parent )
-  : QObject( parent )
+  : QObject( parent ),
+    mSsdpWatcher( new SSDPWatcher(this) )
 {
-    QDBusConnection sessionBus = QDBusConnection::sessionBus();
-
     new UPnPProxyDBusAdaptor( this );
+
+    QDBusConnection sessionBus = QDBusConnection::sessionBus();
     sessionBus.registerService( QString::fromLatin1("org.kde.Cagibi") );
     sessionBus.registerObject( QString::fromLatin1("/"), this );
+
+    connect( mSsdpWatcher, SIGNAL(deviceDiscovered( Cagibi::RootDevice* )),
+             SLOT(onDeviceDiscovered( Cagibi::RootDevice* )) );
+    connect( mSsdpWatcher, SIGNAL(deviceRemoved( Cagibi::RootDevice* )),
+             SLOT(onDeviceRemoved( Cagibi::RootDevice* )) );
+
+    mSsdpWatcher->discover();
 }
 
+DeviceTypeMap UPnPProxy::allDevices() const
+{
+    return DeviceTypeMap();
+}
+
+Device UPnPProxy::deviceDetails( const QString& udn ) const
+{
+    return Device();
+}
+
+void UPnPProxy::onDeviceDiscovered( RootDevice* rootDevice )
+{
+    DeviceTypeMap devices;
+
+    const Device device = rootDevice->device();
+    devices.insert( device.udn(), device.type() );
+
+    emit devicesAdded( devices );
+}
+
+void UPnPProxy::onDeviceRemoved( RootDevice* rootDevice )
+{
+    DeviceTypeMap devices;
+
+    const Device device = rootDevice->device();
+    devices.insert( device.udn(), device.type() );
+
+    emit devicesRemoved( devices );
+}
 
 UPnPProxy::~UPnPProxy()
 {

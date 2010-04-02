@@ -25,8 +25,7 @@
 
 // program
 #include "upnpproxy.h"
-//
-// #include <networkdbus.h>
+#include "dbuscodec.h"
 // Qt
 #include <QtDBus/QtDBus>
 #include <QtCore/QObject>
@@ -35,7 +34,6 @@
 namespace Cagibi
 {
 
-// TODO: see file networkdbus.h
 class UPnPProxyDBusAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
@@ -49,11 +47,13 @@ class UPnPProxyDBusAdaptor: public QDBusAbstractAdaptor
   public:
     UPnPProxy* parent() const;
 
-//   public Q_SLOTS:
-//     Mollet::NetDevice deviceData( const QString& hostAddress );
-// //     Mollet::NetService serviceData( const QString& hostAddress, const QString& serviceName, const QString& serviceType );
-//     Mollet::NetDeviceList deviceDataList();
-//     Mollet::NetServiceList serviceDataList( const QString& hostAddress );
+  public Q_SLOTS:
+    DeviceTypeMap allDevices() const;
+    Cagibi::Device deviceDetails( const QString& udn ) const;
+
+  Q_SIGNALS:
+    void devicesAdded( const DeviceTypeMap& devices );
+    void devicesRemoved( const DeviceTypeMap& devices );
 };
 
 

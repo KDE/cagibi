@@ -25,31 +25,47 @@
 
 // Qt
 #include <QtCore/QObject>
+#include <QtCore/QHash>
+#include <QtCore/QString>
+#include <QtCore/QMetaType>
+
+typedef QHash<QString,QString> DeviceTypeMap;
+Q_DECLARE_METATYPE( DeviceTypeMap )
+
 
 namespace Cagibi
 {
-
-class Network;
-class NetDevice;
+class SSDPWatcher;
+class RootDevice;
+class Device;
 
 
 class UPnPProxy : public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO( "D-Bus Interface", "org.kde.Cagibi" )
 
   public:
     explicit UPnPProxy( QObject* parent = 0 );
     virtual ~UPnPProxy();
 
   public:
+    DeviceTypeMap allDevices() const;
+    Device deviceDetails( const QString& udn ) const;
+
 //     Mollet::NetDevice deviceData( const QString& hostAddress );
 //     Mollet::NetService serviceData( const QString& hostAddress, const QString& serviceName, const QString& serviceType );
 //     Mollet::NetDeviceList deviceDataList();
 //     Mollet::NetServiceList serviceDataList( const QString& hostAddress );
+  Q_SIGNALS:
+    void devicesAdded( const DeviceTypeMap& devices );
+    void devicesRemoved( const DeviceTypeMap& devices );
+
+  private Q_SLOTS:
+    void onDeviceDiscovered( Cagibi::RootDevice* rootDevice );
+    void onDeviceRemoved( Cagibi::RootDevice* rootDevice );
 
   private:
-//     Network* mNetwork;
+    SSDPWatcher* mSsdpWatcher;
 };
 
 }

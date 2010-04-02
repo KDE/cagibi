@@ -34,30 +34,26 @@ namespace Cagibi
 UPnPProxyDBusAdaptor::UPnPProxyDBusAdaptor( UPnPProxy* parent )
   : QDBusAbstractAdaptor( parent )
 {
-    setAutoRelaySignals( true );
+    connect( parent, SIGNAL(devicesAdded(DeviceTypeMap)),
+             SIGNAL(devicesAdded(DeviceTypeMap)) );
+    connect( parent, SIGNAL(devicesRemoved(DeviceTypeMap)),
+             SIGNAL(devicesRemoved(DeviceTypeMap)) );
 
     // TODO: best place to do this?
-    qDBusRegisterMetaType< Cagibi::Device >();
-    qDBusRegisterMetaType< QVector<Cagibi::Device> >();
+    qDBusRegisterMetaType<DeviceTypeMap>();
+    qDBusRegisterMetaType<Cagibi::Device>();
 }
-#if 0
-NetDevice UPnPProxyDBusAdaptor::deviceData( const QString& hostAddress )
+
+DeviceTypeMap UPnPProxyDBusAdaptor::allDevices() const
 {
-    return parent()->deviceData( hostAddress );
+    return parent()->allDevices();
 }
-NetService UPnPProxyDBusAdaptor::serviceData( const QString& hostAddress, const QString& serviceName, const QString& serviceType )
+
+Device UPnPProxyDBusAdaptor::deviceDetails( const QString& udn ) const
 {
-    return parent()->serviceData( hostAddress, serviceName, serviceType );
+    return parent()->deviceDetails( udn );
 }
-NetDeviceList UPnPProxyDBusAdaptor::deviceDataList()
-{
-    return parent()->deviceDataList();
-}
-NetServiceList UPnPProxyDBusAdaptor::serviceDataList( const QString& hostAddress )
-{
-    return parent()->serviceDataList( hostAddress );
-}
-#endif
+
 UPnPProxyDBusAdaptor::~UPnPProxyDBusAdaptor()
 {
 }
