@@ -112,7 +112,7 @@ qDebug() << "Cannot bind to UDP port "<< SSDPPortNumber << ":" << mUdpSocket->er
 
 void SSDPWatcher::discover()
 {
-qDebug() << "Trying to find Cagibi devices on the local network";
+qDebug() << "Trying to find UPnP devices on the local network";
 
     // send a HTTP M-SEARCH message to 239.255.255.250:1900
     const char mSearchMessage[] =
