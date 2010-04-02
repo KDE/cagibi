@@ -53,7 +53,7 @@ QDBusArgument& operator<<( QDBusArgument& argument, const Cagibi::Device& device
         QString() );
 
     Cagibi::RootDevice* rootDevice = devicePrivate->rootDevice();
-    QUrl location = rootDevice->location();
+    QUrl location = rootDevice ? rootDevice->location() : QUrl();
     argument << location.host()
              << location.port();
 
