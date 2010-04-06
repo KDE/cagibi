@@ -22,24 +22,23 @@
 
 // program
 #include "upnpproxy.h"
-// lib
-#include "ssdpwatcher.h"
 // Qt
 #include <QtDBus/QDBusConnection>
 #include <QtCore/QCoreApplication>
 
+// #include <KApplication>
+// #include <kaboutdata.h>
+// #include <kcmdlineargs.h>
 
 int main( int argc, char* argv[] )
 {
     QCoreApplication programCore( argc, argv );
+//     KAboutData about("cagibi", "cagibi", ki18n("Cagibi Daemon"), "", ki18n("Cagibi Daemon"), KAboutData::License_GPL, ki18n("Copyright icke"));
 
-    Cagibi::SSDPWatcher deviceBrowser;
-    deviceBrowser.discover();
+//     KCmdLineArgs::init(argc, argv, &about);
+//     KApplication programCore;
 
     new Cagibi::UPnPProxy();
-//     QDBusConnection connection = QDBusConnection::sessionBus();
-//     connection.registerObject("/Car", car);
-//     connection.registerService( "org.kde.Cagibi" );
 
     const int result = programCore.exec();
 
