@@ -57,7 +57,7 @@ class SSDPWatcher : public QObject
     void deviceRemoved( Cagibi::RootDevice* device );
 
   protected:
-    RootDevice* createDeviceFromResponse( const QByteArray& response );
+    void handleMessage( const QByteArray& message );
 
   protected Q_SLOTS:
     void onUdpSocketReadyRead();

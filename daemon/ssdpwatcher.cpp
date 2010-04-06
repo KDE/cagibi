@@ -129,24 +129,20 @@ qDebug() << "Trying to find UPnP devices on the local network";
 }
 
 
-RootDevice* SSDPWatcher::createDeviceFromResponse( const QByteArray& response )
+void SSDPWatcher::handleMessage( const QByteArray& message )
 {
     RootDevice* device = 0;
 
-    const QStringList lines = QString::fromAscii( response ).split( "\r\n" );
+    const QStringList lines = QString::fromAscii( message ).split( "\r\n" );
 
     // first read first line and see if contains a HTTP 200 OK message or
     // "HTTP/1.1 200 OK"
     // "NOTIFY * HTTP/1.1"
     const QString firstLine = lines.first();
-    if( firstLine.contains("HTTP") )
-    {
-        // it is either a 200 OK or a NOTIFY
-        if( ! firstLine.contains("NOTIFY") && ! firstLine.contains("200 OK") )
-            return 0;
-    }
-    else
-        return 0;
+    if( ! firstLine.contains("HTTP")
+        || (! firstLine.contains( "NOTIFY" )
+            && ! firstLine.contains( "200 OK" )) )
+        return;
 
     QString server;
     QUrl location;
@@ -241,9 +237,12 @@ qDebug()<<"Not interested in:"<<devicePrivate->type();
 qDebug() << "Detected Device:" << server << "UUID" << uuid;
         // everything OK, make a new Device
         device = new RootDevice( server, location, uuid );
-    }
+        connect( device, SIGNAL(deviceDescriptionDownloadDone( RootDevice*, bool )),
+                 SLOT(onDeviceDescriptionDownloadDone( RootDevice*, bool )) );
 
-    return device;
+        device->startDeviceDescriptionDownload();
+        mPendingDevices.insert( device );
+    }
 }
 
 
@@ -267,21 +266,14 @@ void SSDPWatcher::onUdpSocketReadyRead()
 {
     const int pendingDatagramSize = mUdpSocket->pendingDatagramSize();
 
-    QByteArray response( pendingDatagramSize, 0 );
-    const int bytesRead = mUdpSocket->readDatagram( response.data(), pendingDatagramSize );
+    QByteArray message( pendingDatagramSize, 0 );
+    const int bytesRead = mUdpSocket->readDatagram( message.data(), pendingDatagramSize );
     if( bytesRead == -1 )
         // TODO: error handling
         return;
-qDebug()<<QString::fromAscii(response);
-    RootDevice* device = createDeviceFromResponse( response );
-    if( device )
-    {
-        connect( device, SIGNAL(deviceDescriptionDownloadDone( RootDevice*, bool )),
-                 SLOT(onDeviceDescriptionDownloadDone( RootDevice*, bool )) );
+qDebug()<<QString::fromAscii(message);
 
-        device->startDeviceDescriptionDownload();
-        mPendingDevices.insert( device );
-    }
+    handleMessage( message );
 }
 
 
