@@ -63,6 +63,7 @@ class SSDPWatcher : public QObject
     void onUdpSocketReadyRead();
     void onUdpSocketError( QAbstractSocket::SocketError error );
     void onDeviceDescriptionDownloadDone( RootDevice* device, bool success );
+    void onCacheTimedOut( RootDevice* device );
 
   protected:
     QHash<QString,RootDevice*> mDevices;

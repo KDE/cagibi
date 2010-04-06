@@ -145,11 +145,12 @@ void SSDPWatcher::handleMessage( const QByteArray& message )
     QString server;
     QUrl location;
     QString uuid;
-    enum MessageType { SearchAnswer, Notification, UnknownMessage };
-    enum DeviceState { Alive, ByeBye, OtherState };
-    DeviceState deviceState = OtherState;
+    enum MessageType { UnknownMessage, SearchAnswer, Notification };
+    enum DeviceState { UnknownState, Alive, ByeBye };
+    const int unsetAge = -1;
+    DeviceState deviceState = UnknownState;
     MessageType messageType = UnknownMessage;
-    int maxAge = 0; // in seconds
+    int maxAge = unsetAge; // in seconds
 
     // read all lines and try to find the server and location fields
     foreach( const QString& line, lines )
@@ -185,14 +186,19 @@ qDebug()<<"NTS:"<<value;
                 deviceState = Alive;
             else if( value == QLatin1String("ssdp:byebye") )
                 deviceState = ByeBye;
+            else
+qDebug()<<"No state in NTS found!";
         }
         else if( key == QLatin1String("CACHE-CONTROL") )
         {
-            const int separatorIndex = line.indexOf( '=' );
-            const QString key = line.left( separatorIndex ).trimmed().toUpper();
-            const QString value = line.mid( separatorIndex+1 ).trimmed();
-            if( key == QLatin1String("MAX-AGE") )
-                maxAge = value.toInt();
+qDebug()<<"CACHE-CONTROL:"<<value;
+            const int separatorIndex = value.indexOf( '=' );
+            const QString cacheKey = value.left( separatorIndex ).trimmed().toUpper();
+            const QString cacheValue = value.mid( separatorIndex+1 ).trimmed();
+            if( cacheKey == QLatin1String("MAX-AGE") )
+                maxAge = cacheValue.toInt();
+            else
+qDebug()<<"No MAX-AGE in CACHE-CONTROL found!";
         }
 // TODO:         else if( key == QLatin1String("DATE") )
         else if( key == QLatin1String("USN") ) // unique service name
@@ -207,34 +213,80 @@ qDebug()<<"USN:"<<value;
         }
     }
 
+    // check completeness
+    bool isComplete;
     if( uuid.isEmpty() )
     {
+        isComplete = false;
 qDebug()<<"No uuid found!";
     }
     else if( location.isEmpty() )
     {
+        isComplete = false;
 qDebug()<<"No location found!";
     }
-    else if( deviceState == OtherState && messageType == Notification )
+    else
+        isComplete = true;
+
+    if( ! isComplete )
+        return;
+
+    bool isDetectedDevice = false;
+    QHash<QString,RootDevice*>::Iterator it = mDevices.find( uuid );
+    const bool isNewDevice = ( it == mDevices.end() );
+
+    if( messageType == Notification )
     {
+        switch( deviceState )
+        {
+        case Alive:
+            if( isNewDevice )
+                isDetectedDevice = true;
+            else
+            {
+                RootDevice* device = it.value();
+                if( maxAge != unsetAge )
+                {
+                    device->resetCacheTimeOut( maxAge );
+qDebug()<<"Resetting cache timeout: device" << device->uuid() << "maxAge"<<maxAge;
+                }
+                else
+qDebug()<<"Max-age not set in Alive notification for device"<<device->uuid();
+            }
+            break;
+        case ByeBye:
+            if( ! isNewDevice )
+            {
+                RootDevice* device = it.value();
+                mDevices.erase( it );
+                device->deleteLater();
+                emit deviceRemoved( device );
+            }
+            else
+            // TODO: check pending devices
+qDebug()<<"Seen ByeBye notification from undetected device";
+            break;
+        case UnknownState:
+        default:
 qDebug()<<"NTS neither alive nor byebye";
+        }
     }
-    else if( mDevices.contains(uuid) )
+    else if( messageType == SearchAnswer )
     {
+        if( isNewDevice )
+            isDetectedDevice = true;
+        else
 qDebug()<<"Already inserted:"<<uuid<<"!";
     }
-#if 0
-    else if( ! mBrowsedDeviceTypes.isEmpty() && ! mBrowsedDeviceTypes.contains(devicePrivate->type()) )
-    {
-qDebug()<<"Not interested in:"<<devicePrivate->type();
-        devicePrivate->setInvalid();
-    }
-#endif
     else
+qDebug()<<"No messagetype found (NT/ST)!";
+
+    if( isDetectedDevice )
     {
 qDebug() << "Detected Device:" << server << "UUID" << uuid;
         // everything OK, make a new Device
         RootDevice* device = new RootDevice( server, location, uuid );
+        device->resetCacheTimeOut( maxAge ); // TODO: might timeout before desciption done
         connect( device, SIGNAL(deviceDescriptionDownloadDone( RootDevice*, bool )),
                  SLOT(onDeviceDescriptionDownloadDone( RootDevice*, bool )) );
 
@@ -255,9 +307,19 @@ void SSDPWatcher::onDeviceDescriptionDownloadDone( RootDevice* device, bool succ
     else
     {
         mDevices.insert( device->uuid(), device );
+        connect( device, SIGNAL(cacheTimedOut( RootDevice* )),
+                 SLOT(onCacheTimedOut( RootDevice* )) );
 qDebug()<< "Added:"<<device->name()<<device->uuid();
         emit deviceDiscovered( device );
     }
+}
+
+void SSDPWatcher::onCacheTimedOut( RootDevice* device )
+{
+    mDevices.remove( device->uuid() );
+    device->deleteLater();
+qDebug()<< "Caching timed out:"<<device->name()<<device->uuid();
+    emit deviceRemoved( device );
 }
 
 void SSDPWatcher::onUdpSocketReadyRead()
