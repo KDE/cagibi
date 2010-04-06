@@ -118,8 +118,8 @@ qDebug() << "Trying to find UPnP devices on the local network";
     const char mSearchMessage[] =
         "M-SEARCH * HTTP/1.1\r\n"
         "HOST: "SSDP_BROADCAST_ADDRESS":"SSDP_PORT"\r\n"
-//         "ST:urn:schemas-upnp-org:device:upnp:rootdevice:1\r\n"
-        "ST: ssdp:all\r\n"
+        "ST:urn:schemas-upnp-org:device:upnp:rootdevice:1\r\n"
+//         "ST: ssdp:all\r\n"
         "MAN:\"ssdp:discover\"\r\n"
         "MX:3\r\n" // max number of seconds to wait for response
         "\r\n";
