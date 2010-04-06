@@ -59,6 +59,16 @@ void RootDevice::setDevice( const Device& device )
     d->setDevice( device );
 }
 
+void RootDevice::resetCacheTimeOut( int timeout )
+{
+    d->resetCacheTimeOut( timeout );
+}
+
+void RootDevice::timerEvent( QTimerEvent* event )
+{
+    d->timerEvent( event );
+}
+
 RootDevice::~RootDevice()
 {
     delete d;

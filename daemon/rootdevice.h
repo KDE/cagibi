@@ -61,10 +61,17 @@ class RootDevice : public QObject
     void startServiceDescriptionDownload( const Service& service );
     void setBaseUrl( const QString& baseUrl );
     void setDevice( const Device& device );
+    // in seconds
+    void resetCacheTimeOut( int timeout );
 
   Q_SIGNALS:
     void deviceDescriptionDownloadDone( RootDevice* device, bool success );
     void serviceDescriptionDownloadDone( const Service& service, bool success );
+
+    void cacheTimedOut( RootDevice* device );
+
+  protected: // QWidget API
+     virtual void timerEvent( QTimerEvent* event );
 
   protected:
     Q_PRIVATE_SLOT( d, void onDeviceDescriptionDownloadReply( QNetworkReply* reply ) )

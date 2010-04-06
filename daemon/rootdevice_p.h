@@ -31,6 +31,7 @@
 // Qt
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtCore/QUrl>
+#include <QtCore/QTimerEvent>
 
 class QNetworkReply;
 
@@ -59,11 +60,14 @@ class RootDevicePrivate
     void startServiceDescriptionDownload( const Service& service );
     void setBaseUrl( const QString& baseUrl );
     void setDevice( const Device& device );
+    void resetCacheTimeOut( int timeout );
 
   public: // slots
     void onDeviceDescriptionDownloadReply( QNetworkReply* reply );
 //     void onServiceDescriptionDownloadDone( KJob* job );
 //     void onSoapReplyReceived( const QByteArray& reply, const QVariant& data );
+
+    void timerEvent( QTimerEvent* event );
 
   protected:
     RootDevice* p;
@@ -81,6 +85,7 @@ class RootDevicePrivate
 //     QHash<KJob*,Service> mServiceDownloadJob;
 
     QString mError;
+    int mTimerId;
 };
 
 
@@ -92,7 +97,8 @@ inline RootDevicePrivate::RootDevicePrivate( const QString& name, const QUrl& lo
     mLocation( location ),
     mUuid( uuid ),
 //     mSoapAgent( new SoapAgent(location,p) ),
-    mNetworkAccessManager( new QNetworkAccessManager(p) )
+    mNetworkAccessManager( new QNetworkAccessManager(p) ),
+    mTimerId( 0 )
 {
     p->connect( mNetworkAccessManager, SIGNAL(finished( QNetworkReply*) ),
                 SLOT(onDeviceDescriptionDownloadReply( QNetworkReply* )) );
@@ -109,6 +115,21 @@ inline const QString& RootDevicePrivate::lastError() const { return mError; }
 
 inline void RootDevicePrivate::setBaseUrl( const QString& baseUrl ) { mBaseUrl = baseUrl; }
 inline void RootDevicePrivate::setDevice( const Device& device ) { mDevice = device; }
+
+inline void RootDevicePrivate::resetCacheTimeOut( int timeout )
+{
+    if( mTimerId != 0 )
+        p->killTimer( mTimerId );
+
+    mTimerId = p->startTimer( timeout * 1000 );
+}
+
+inline void RootDevicePrivate::timerEvent( QTimerEvent* event )
+{
+    Q_UNUSED( event );
+
+    emit p->cacheTimedOut( p );
+}
 
 }
 
