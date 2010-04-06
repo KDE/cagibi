@@ -131,8 +131,6 @@ qDebug() << "Trying to find UPnP devices on the local network";
 
 void SSDPWatcher::handleMessage( const QByteArray& message )
 {
-    RootDevice* device = 0;
-
     const QStringList lines = QString::fromAscii( message ).split( "\r\n" );
 
     // first read first line and see if contains a HTTP 200 OK message or
@@ -180,7 +178,7 @@ qDebug()<<"ST:"<<value;
 qDebug()<<"NT:"<<value;
             messageType = Notification;
         }
-        else if( key == QLatin1String("NTS") ) // notification type s?
+        else if( key == QLatin1String("NTS") ) // notification type s(tatus)?
         {
 qDebug()<<"NTS:"<<value;
             if( value == QLatin1String("ssdp:alive") )
@@ -236,12 +234,12 @@ qDebug()<<"Not interested in:"<<devicePrivate->type();
     {
 qDebug() << "Detected Device:" << server << "UUID" << uuid;
         // everything OK, make a new Device
-        device = new RootDevice( server, location, uuid );
+        RootDevice* device = new RootDevice( server, location, uuid );
         connect( device, SIGNAL(deviceDescriptionDownloadDone( RootDevice*, bool )),
                  SLOT(onDeviceDescriptionDownloadDone( RootDevice*, bool )) );
 
-        device->startDeviceDescriptionDownload();
         mPendingDevices.insert( device );
+        device->startDeviceDescriptionDownload();
     }
 }
 
