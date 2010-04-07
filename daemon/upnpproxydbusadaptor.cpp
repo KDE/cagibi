@@ -49,6 +49,16 @@ DeviceTypeMap UPnPProxyDBusAdaptor::allDevices() const
     return parent()->allDevices();
 }
 
+DeviceTypeMap UPnPProxyDBusAdaptor::devicesByParent( const QString& udn ) const
+{
+    return parent()->devicesByParent( udn );
+}
+
+DeviceTypeMap UPnPProxyDBusAdaptor::devicesByType( const QString& type ) const
+{
+    return parent()->devicesByType( type );
+}
+
 Device UPnPProxyDBusAdaptor::deviceDetails( const QString& udn ) const
 {
     return parent()->deviceDetails( udn );

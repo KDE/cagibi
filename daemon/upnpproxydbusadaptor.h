@@ -49,6 +49,8 @@ class UPnPProxyDBusAdaptor: public QDBusAbstractAdaptor
 
   public Q_SLOTS:
     DeviceTypeMap allDevices() const;
+    DeviceTypeMap devicesByParent( const QString& udn ) const;
+    DeviceTypeMap devicesByType( const QString& type ) const;
     Cagibi::Device deviceDetails( const QString& udn ) const;
 
   Q_SIGNALS:

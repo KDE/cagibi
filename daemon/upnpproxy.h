@@ -50,6 +50,8 @@ class UPnPProxy : public QObject
 
   public:
     DeviceTypeMap allDevices() const;
+    DeviceTypeMap devicesByParent( const QString& udn ) const;
+    DeviceTypeMap devicesByType( const QString& type ) const;
     Device deviceDetails( const QString& udn ) const;
 
   Q_SIGNALS:

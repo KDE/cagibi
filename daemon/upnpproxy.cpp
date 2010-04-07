@@ -39,6 +39,17 @@ static void fillMap( DeviceTypeMap& map, const Device& device )
         fillMap( map, subDevice );
 }
 
+static void fillMapByType( DeviceTypeMap& map, const Device& device,
+                           const QString& type = QString() )
+{
+    const QString deviceType = device.type();
+    if( deviceType == type )
+        map.insert( device.udn(), deviceType );
+
+    foreach( const Cagibi::Device& subDevice, device.devices() )
+        fillMapByType( map, subDevice, type );
+}
+
 static const Device* find( const Device& device, const QString& udn )
 {
     const Device* result = 0;
@@ -87,6 +98,43 @@ DeviceTypeMap UPnPProxy::allDevices() const
     {
         const Device device = rootDevice->device();
         fillMap( result, device );
+    }
+
+    return result;
+}
+
+DeviceTypeMap UPnPProxy::devicesByParent( const QString& udn ) const
+{
+    DeviceTypeMap result;
+
+    const QList<RootDevice*> rootDevices = mSsdpWatcher->devices();
+
+    foreach( RootDevice* rootDevice, rootDevices )
+    {
+        const Device device = rootDevice->device();
+
+        const Device* match = find( device, udn );
+        if( match )
+        {
+            foreach( const Cagibi::Device& subDevice, device.devices() )
+                result.insert( subDevice.udn(), subDevice.type() );
+            break;
+        }
+    }
+
+    return result;
+}
+
+DeviceTypeMap UPnPProxy::devicesByType( const QString& type ) const
+{
+    DeviceTypeMap result;
+
+    const QList<RootDevice*> rootDevices = mSsdpWatcher->devices();
+
+    foreach( RootDevice* rootDevice, rootDevices )
+    {
+        const Device device = rootDevice->device();
+        fillMapByType( result, device, type );
     }
 
     return result;
