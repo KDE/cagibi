@@ -40,7 +40,7 @@ const char* const DevicePrivate::keys[] =
     "modelNumber",
     "serialNumber",
     "UDN",
-    "presentationUrl"
+    "presentationURL"
 };
 
 void DevicePrivate::addIcon( const Icon& icon )
