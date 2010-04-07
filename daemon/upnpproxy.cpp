@@ -115,12 +115,17 @@ DeviceTypeMap UPnPProxy::devicesByParent( const QString& udn ) const
     {
         const Device device = rootDevice->device();
 
-        const Device* match = find( device, udn );
-        if( match )
+        if( udn.isEmpty() )
+            result.insert( device.udn(), device.type() );
+        else
         {
-            foreach( const Cagibi::Device& subDevice, device.devices() )
-                result.insert( subDevice.udn(), subDevice.type() );
-            break;
+            const Device* match = find( device, udn );
+            if( match )
+            {
+                foreach( const Cagibi::Device& subDevice, device.devices() )
+                    result.insert( subDevice.udn(), subDevice.type() );
+                break;
+            }
         }
     }
 
