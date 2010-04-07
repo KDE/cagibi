@@ -28,6 +28,7 @@
 #include "rootdevice.h"
 #include "device.h"
 
+#include <QtCore/QDebug>
 
 namespace Cagibi
 {
@@ -40,9 +41,10 @@ static void fillMap( DeviceTypeMap& map, const Device& device )
 }
 
 static void fillMapByType( DeviceTypeMap& map, const Device& device,
-                           const QString& type = QString() )
+                           const QString& type )
 {
     const QString deviceType = device.type();
+
     if( deviceType == type )
         map.insert( device.udn(), deviceType );
 
