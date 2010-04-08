@@ -9,7 +9,6 @@ set( cagibid_SRCS
     service.cpp
     device_p.cpp
     device.cpp
-    rootdevice_p.cpp
     rootdevice.cpp
     ssdpwatcher.cpp
     upnpproxy.cpp

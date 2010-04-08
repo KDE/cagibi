@@ -21,57 +21,130 @@
 */
 
 #include "rootdevice.h"
-#include "rootdevice_p.h"
 #include "rootdevice.moc"
+
+// server
+#include "devicedescriptionxmlhandler.h"
+// #include "service.h"
+// Qt
+#include <QtNetwork/QNetworkReply>
 
 
 namespace Cagibi
 {
 
-
-RootDevice::RootDevice( const QString& name, const QUrl& location, const QString& uuid )
-  : QObject(),
-    d( new RootDevicePrivate(name,location,uuid,this) )
+static bool parseDeviceDescription( RootDevice* device, const QByteArray& data, QString* error )
 {
-}
+    bool result = true;
 
-QString RootDevice::name() const { return d->name(); }
-QString RootDevice::uuid() const { return d->uuid(); }
-QUrl RootDevice::location() const { return d->location(); }
-Device RootDevice::device() const { return d->device(); }
-QString RootDevice::lastError() const { return d->lastError(); }
+    QXmlInputSource input;
+    input.setData( data );
 
-void RootDevice::startDeviceDescriptionDownload()
-{
-    d->startDeviceDescriptionDownload();
-}
-void RootDevice::startServiceDescriptionDownload( const Service& service )
-{
-    d->startServiceDescriptionDownload( service );
+    QXmlSimpleReader reader;
+    DeviceDescriptionXMLHandler descriptionXMLHandler( device );
+    reader.setContentHandler( &descriptionXMLHandler );
+
+    result = reader.parse( &input, false );
+
+    if( ! result )
+        *error = QObject::tr( "Error parsing XML of device description." );
+
+    return result;
 }
 
-void RootDevice::setBaseUrl( const QString& baseUrl )
-{
-    d->setBaseUrl( baseUrl );
-}
-void RootDevice::setDevice( const Device& device )
-{
-    d->setDevice( device );
-}
-
-void RootDevice::resetCacheTimeOut( int timeout )
-{
-    d->resetCacheTimeOut( timeout );
-}
 
 void RootDevice::timerEvent( QTimerEvent* event )
 {
-    d->timerEvent( event );
+    Q_UNUSED( event );
+
+    emit cacheTimedOut( this );
 }
+
+#if 0
+void RootDevice::startServiceDescriptionDownload( const Service& service )
+{
+    const QUrl location = mBaseUrl + service.descriptionUrl();
+qDebug() << "Downloading service description from " << location;
+
+    mError = QString();
+
+//     KIO::Job* job = KIO::storedGet( location, KIO::NoReload, KIO::Overwrite | KIO::HideProgressInfo );
+//     connect( job, SIGNAL(result( KJob* )), SLOT(onServiceDescriptionDownloadDone( KJob* )) );
+//     mServiceDownloadJob[job] = service;
+}
+#endif
+void RootDevice::onDeviceDescriptionDownloadReply( QNetworkReply* reply )
+{
+    bool success;
+
+    if( reply->error() != QNetworkReply::NoError )
+    {
+        mError = QObject::tr( "Failed to download from \"%1\": %2").arg( mLocation.toString(), reply->error() );
+qDebug() << mError;
+        success = false;
+    }
+    else
+    {
+        const QByteArray deviceDescriptionData = reply->readAll();
+qDebug()<< QString::fromAscii(deviceDescriptionData);
+        success = parseDeviceDescription( this, deviceDescriptionData, &mError );
+    }
+    reply->deleteLater();
+
+    emit deviceDescriptionDownloadDone( this, success );
+}
+
+#if 0
+void RootDevice::onServiceDescriptionDownloadDone( KJob* job )
+{
+    bool success;
+
+    Service service = mServiceDownloadJob[job];
+    mServiceDownloadJob.remove( job );
+
+    const QUrl location = mBaseUrl + service.descriptionUrl();
+
+    if( job->error() )
+    {
+        mError = QObject::tr( "Failed to download service description from \"%1\": %2").arg(location.toString(), job->errorString() );
+qDebug() << mError;
+        success = false;
+    }
+    else
+    {
+        KIO::StoredTransferJob* storedTransferJob = static_cast<KIO::StoredTransferJob*>( job );
+qDebug()<< QString::fromAscii(storedTransferJob->data());
+        success = true;//parseDescription( p, storedTransferJob->data(), &mError );
+    }
+    emit serviceDescriptionDownloadDone( service, success );
+}
+#endif
+
+#if 0
+void RootDevice::onSoapReplyReceived( const QByteArray& reply, const QVariant& data )
+{
+    const bool isError = reply.isEmpty();
+    if( isError )
+    {
+        mError = mSoapAgent->lastError();
+qDebug() << "Error: " << mError;
+    }
+    else
+    {
+        if( reply.contains("Connected") )
+        {
+            Service service = data.value<Service>();
+            service.setReady();
+            mDevice.addService( service );
+
+qDebug() << "Service added: " << service.type();
+        }
+    }
+}
+#endif
 
 RootDevice::~RootDevice()
 {
-    delete d;
 }
 
 }

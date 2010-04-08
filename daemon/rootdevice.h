@@ -23,24 +23,29 @@
 #ifndef ROOTDEVICE_H
 #define ROOTDEVICE_H
 
+// program
+#include "device.h"
+// #include "service.h"
+// #include "soapagent.h"
 // Qt
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkRequest>
+#include <QtCore/QUrl>
+#include <QtCore/QTimerEvent>
 #include <QtCore/QObject>
 
+#include <QtCore/QDebug>
+
+class QNetworkReply;
 class QUrl;
 
 
 namespace Cagibi
 {
-class Service;
-class Device;
-class RootDevicePrivate;
-
 
 class RootDevice : public QObject
 {
   Q_OBJECT
-
-  friend class RootDevicePrivate;
 
   public:
     RootDevice( const QString& name, const QUrl& location, const QString& uuid );
@@ -48,17 +53,17 @@ class RootDevice : public QObject
     virtual ~RootDevice();
 
   public:
-    QString name() const;
-    QString uuid() const;
-    QUrl location() const;
+    const QString& name() const;
+    const QString& uuid() const;
+    const QUrl& location() const;
 
-    Device device() const;
+    const Device& device() const;
 
-    QString lastError() const;
+    const QString& lastError() const;
 
   public:
     void startDeviceDescriptionDownload();
-    void startServiceDescriptionDownload( const Service& service );
+//     void startServiceDescriptionDownload( const Service& service );
     void setBaseUrl( const QString& baseUrl );
     void setDevice( const Device& device );
     // in seconds
@@ -66,21 +71,77 @@ class RootDevice : public QObject
 
   Q_SIGNALS:
     void deviceDescriptionDownloadDone( RootDevice* device, bool success );
-    void serviceDescriptionDownloadDone( const Service& service, bool success );
+//     void serviceDescriptionDownloadDone( const Service& service, bool success );
 
     void cacheTimedOut( RootDevice* device );
 
   protected: // QWidget API
      virtual void timerEvent( QTimerEvent* event );
 
-  protected:
-    Q_PRIVATE_SLOT( d, void onDeviceDescriptionDownloadReply( QNetworkReply* reply ) )
-//     Q_PRIVATE_SLOT( d, void onServiceDescriptionDownloadDone( KJob* job ) )
-//     Q_PRIVATE_SLOT( d, void onSoapReplyReceived( const QByteArray& reply, const QVariant& data ) )
+  protected Q_SLOTS:
+    void onDeviceDescriptionDownloadReply( QNetworkReply* reply );
+//     void onServiceDescriptionDownloadDone( KJob* job );
+//     void onSoapReplyReceived( const QByteArray& reply, const QVariant& data );
 
   protected:
-    RootDevicePrivate* d;
+    QString mName;
+    QUrl mLocation;
+    QString mUuid;
+    QString mBaseUrl;
+
+    Device mDevice;
+
+//     SoapAgent* mSoapAgent;
+    QNetworkAccessManager* mNetworkAccessManager;
+
+//     QHash<KJob*,Service> mServiceDownloadJob;
+
+    QString mError;
+    int mTimerId;
 };
+
+
+inline RootDevice::RootDevice( const QString& name, const QUrl& location, const QString& uuid )
+  : QObject(),
+    mName( name ),
+    mLocation( location ),
+    mUuid( uuid ),
+//     mSoapAgent( new SoapAgent(location,this) ),
+    mNetworkAccessManager( new QNetworkAccessManager(this) ),
+    mTimerId( 0 )
+{
+    connect( mNetworkAccessManager, SIGNAL(finished(QNetworkReply*) ),
+             SLOT(onDeviceDescriptionDownloadReply(QNetworkReply*)) );
+
+//     connect( mSoapAgent, SIGNAL(replyReceived( const QByteArray&, const QVariant& )),
+//              SLOT(onSoapReplyReceived( const QByteArray&, const QVariant& )) );
+}
+
+inline const QString& RootDevice::name()      const { return mName; }
+inline const QString& RootDevice::uuid()      const { return mUuid; }
+inline const QUrl& RootDevice::location()     const { return mLocation; }
+inline const Device& RootDevice::device()     const { return mDevice; }
+inline const QString& RootDevice::lastError() const { return mError; }
+
+inline void RootDevice::setBaseUrl( const QString& baseUrl ) { mBaseUrl = baseUrl; }
+inline void RootDevice::setDevice( const Device& device )    { mDevice = device; }
+
+inline void RootDevice::resetCacheTimeOut( int timeout )
+{
+    if( mTimerId != 0 )
+        killTimer( mTimerId );
+
+    mTimerId = startTimer( timeout * 1000 );
+}
+
+inline void RootDevice::startDeviceDescriptionDownload()
+{
+qDebug() << "Downloading description from " << mLocation;
+
+    mError = QString();
+
+    mNetworkAccessManager->get( QNetworkRequest(mLocation) );
+}
 
 }
 
