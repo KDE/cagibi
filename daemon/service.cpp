@@ -45,12 +45,12 @@ Service::Service( const Service& other )
 }
 
 
-QString Service::type() const { return d->type(); }
+const QString& Service::type() const { return d->type(); }
 bool Service::isReady() const { return d->isReady(); }
-QString Service::id() const { return d->id(); }
-QString Service::descriptionUrl() const { return d->descriptionUrl(); }
-QString Service::controlUrl() const { return d->controlUrl(); }
-QString Service::eventSubUrl() const { return d->eventSubUrl(); }
+const QString& Service::id() const { return d->id(); }
+const QString& Service::descriptionUrl() const { return d->descriptionUrl(); }
+const QString& Service::controlUrl() const { return d->controlUrl(); }
+const QString& Service::eventSubUrl() const { return d->eventSubUrl(); }
 
 Device Service::device() const { return d->device(); }
 

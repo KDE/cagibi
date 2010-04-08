@@ -45,11 +45,11 @@ Icon::Icon( const Icon& other )
 }
 
 
-QString Icon::mimeType() const { return d->mimeType(); }
+const QString& Icon::mimeType() const { return d->mimeType(); }
 int Icon::width() const { return d->width(); }
 int Icon::height() const { return d->height(); }
 int Icon::depth() const { return d->depth(); }
-QString Icon::url() const { return d->url(); }
+const QString& Icon::url() const { return d->url(); }
 
 void Icon::setProperty( const QString& key, const QString& value )
 {

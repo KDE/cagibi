@@ -69,21 +69,21 @@ class Device
     bool operator==( const Device& other ) const;
 
   public:
-    QString type() const;
-    QString friendlyName() const;
-    QString manufacturerName() const;
-//     QString manufacturerUrl() const;
-    QString modelDescription() const;
-    QString modelName() const;
-    QString modelNumber() const;
-    QString serialNumber() const;
-    QString udn() const;
-//     QString upc() const;
-    QString presentationUrl() const;
+    const QString& type() const;
+    const QString& friendlyName() const;
+    const QString& manufacturerName() const;
+//     const QString& manufacturerUrl() const;
+    const QString& modelDescription() const;
+    const QString& modelName() const;
+    const QString& modelNumber() const;
+    const QString& serialNumber() const;
+    const QString& udn() const;
+//     const QString& upc() const;
+    const QString& presentationUrl() const;
 
-    QList<Icon> icons() const;
-    QList<Service> services() const;
-    QList<Device> devices() const;
+    const QList<Icon>& icons() const;
+    const QList<Service>& services() const;
+    const QList<Device>& devices() const;
 
     bool hasParentDevice() const;
     Device parentDevice() const;

@@ -56,11 +56,11 @@ class Service
     bool operator==( const Service& other ) const;
 
   public:
-    QString type() const;
-    QString id() const;
-    QString descriptionUrl() const;
-    QString controlUrl() const;
-    QString eventSubUrl() const;
+    const QString& type() const;
+    const QString& id() const;
+    const QString& descriptionUrl() const;
+    const QString& controlUrl() const;
+    const QString& eventSubUrl() const;
     bool isReady() const;
 
     Device device() const;

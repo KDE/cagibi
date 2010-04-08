@@ -44,19 +44,19 @@ Device::Device( const Device& other )
 {
 }
 
-QString Device::type() const { return d->type(); }
-QString Device::friendlyName() const { return d->friendlyName(); }
-QString Device::manufacturerName() const { return d->manufacturerName(); }
-QString Device::modelDescription() const { return d->modelDescription(); }
-QString Device::modelName() const { return d->modelName(); }
-QString Device::modelNumber() const { return d->modelNumber(); }
-QString Device::serialNumber() const { return d->serialNumber(); }
-QString Device::udn() const { return d->udn(); }
-QString Device::presentationUrl() const { return d->presentationUrl(); }
+const QString& Device::type() const { return d->type(); }
+const QString& Device::friendlyName() const { return d->friendlyName(); }
+const QString& Device::manufacturerName() const { return d->manufacturerName(); }
+const QString& Device::modelDescription() const { return d->modelDescription(); }
+const QString& Device::modelName() const { return d->modelName(); }
+const QString& Device::modelNumber() const { return d->modelNumber(); }
+const QString& Device::serialNumber() const { return d->serialNumber(); }
+const QString& Device::udn() const { return d->udn(); }
+const QString& Device::presentationUrl() const { return d->presentationUrl(); }
 
-QList<Icon> Device::icons() const { return d->icons(); }
-QList<Service> Device::services() const { return d->services(); }
-QList<Device> Device::devices() const { return d->devices(); }
+const QList<Icon>& Device::icons() const { return d->icons(); }
+const QList<Service>& Device::services() const { return d->services(); }
+const QList<Device>& Device::devices() const { return d->devices(); }
 
 bool Device::hasParentDevice() const { return d->hasParentDevice(); }
 Device Device::parentDevice() const { return d->parentDevice(); }

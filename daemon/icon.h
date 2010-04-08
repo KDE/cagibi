@@ -54,11 +54,11 @@ class Icon
     bool operator==( const Icon& other ) const;
 
   public:
-    QString mimeType() const;
+    const QString& mimeType() const;
     int width() const;
     int height() const;
     int depth() const;
-    QString url() const;
+    const QString& url() const;
 
   public:
     void setProperty( const QString& key, const QString& value );
