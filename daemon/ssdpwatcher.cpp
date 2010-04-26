@@ -47,6 +47,7 @@ namespace Cagibi
 #define SSDP_BROADCAST_ADDRESS "239.255.255.250"
 #define SSDP_PORT_NUMBER 1900
 #define SSDP_PORT "1900"
+#define ROOTDEVICE "urn:schemas-upnp-org:device:upnp:rootdevice:1"
 
 static const int SSDPPortNumber = SSDP_PORT_NUMBER;
 static const char SSDPBroadCastAddress[] = SSDP_BROADCAST_ADDRESS;
@@ -118,7 +119,7 @@ qDebug() << "Trying to find UPnP devices on the local network";
     const char mSearchMessage[] =
         "M-SEARCH * HTTP/1.1\r\n"
         "HOST: "SSDP_BROADCAST_ADDRESS":"SSDP_PORT"\r\n"
-        "ST:urn:schemas-upnp-org:device:upnp:rootdevice:1\r\n"
+        "ST:"ROOTDEVICE"\r\n"
 //         "ST: ssdp:all\r\n"
         "MAN:\"ssdp:discover\"\r\n"
         "MX:3\r\n" // max number of seconds to wait for response
