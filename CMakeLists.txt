@@ -1,14 +1,12 @@
 project( Cagibi )
 
-find_package( KDE4 REQUIRED )
+cmake_minimum_required(VERSION 2.4.5 FATAL_ERROR)
 
-include( KDE4Defaults )
-include( MacroLibrary )
+set(CMAKE_MODULE_PATH "${Cagibi_SOURCE_DIR}/cmake/modules")
 
-add_definitions( ${KDE4_DEFINITIONS} )
-include_directories(
-  ${KDE4_INCLUDES}
-  ${KDEPIMLIBS_INCLUDE_DIR}
-)
+find_package( Qt4 REQUIRED COMPONENTS QtCore QtXml QtDBus QtNetwork )
+include(${QT_USE_FILE})
 
-macro_optional_add_subdirectory( daemon )
+find_package(Automoc4 REQUIRED)
+
+add_subdirectory( daemon )

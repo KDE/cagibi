@@ -21,7 +21,7 @@
 */
 
 #include "rootdevice.h"
-#include "rootdevice.moc"
+// #include "rootdevice.moc"
 
 // server
 #include "devicedescriptionxmlhandler.h"

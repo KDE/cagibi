@@ -17,7 +17,7 @@ set( cagibid_SRCS
     main.cpp
 )
 
-kde4_add_executable( cagibid  ${cagibid_SRCS} )
+automoc4_add_executable( cagibid  ${cagibid_SRCS} )
 
 target_link_libraries( cagibid
     ${QT_QTNETWORK_LIBRARY}
@@ -26,8 +26,7 @@ target_link_libraries( cagibid
     ${QT_QTCORE_LIBRARY}
 )
 
-install( TARGETS cagibid  ${INSTALL_TARGETS_DEFAULT_ARGS} )
+install( TARGETS cagibid  RUNTIME DESTINATION bin )
 
-
-configure_file( org.kde.cagibi.service.cmake ${CMAKE_CURRENT_BINARY_DIR}/org.kde.cagibi.service )
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/org.kde.cagibi.service DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dbus-1/services )
+configure_file( org.kde.cagibi.service.cmake ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Cagibi.service )
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Cagibi.service DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dbus-1/services )
