@@ -1,0 +1,78 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node xmlns:tp="http://telepathy.freedesktop.org/wiki/DbusSpec#extensions-v0">
+<interface name="org.kde.Cagibi">
+    <!-- METHODS -->
+
+    <method name="allDevices">
+        <tp:docstring>
+        Get the list of UPnP devices currently discovered.
+        </tp:docstring>
+        <arg type="a{ss}" direction="out">
+            <tp:docstring>
+            A list of the devices as pairs of first udn and second type.
+            </tp:docstring>
+        </arg>
+    </method>
+
+    <method name="devicesByParent">
+        <tp:docstring>
+        Get the list of UPnP devices currently discovered which have the device with
+        the given udn as parent device.
+        </tp:docstring>
+        <arg name="udn" type="s" direction="in"/>
+        <arg type="a{ss}" direction="out">
+            <tp:docstring>
+            A list of the devices as pairs of first udn and second type.
+            </tp:docstring>
+        </arg>
+    </method>
+
+    <method name="devicesByType">
+        <tp:docstring>
+        Get the list of UPnP devices currently discovered which are of the given type.
+        </tp:docstring>
+        <arg name="type" type="s" direction="in"/>
+        <arg type="a{ss}" direction="out">
+            <tp:docstring>
+            A list of the devices as pairs of first udn and second type.
+            </tp:docstring>
+        </arg>
+    </method>
+
+    <method name="deviceDetails">
+        <tp:docstring>
+        Get the details of the device with the given udn.
+        </tp:docstring>
+        <arg name="udn" type="s" direction="in"/>
+        <arg type="(ssssssssssis)" direction="out">
+            <tp:docstring>
+            Details of the device. TODO: turn into StringVariantMap to be extendable
+            </tp:docstring>
+        </arg>
+    </method>
+
+    <!-- SIGNALS -->
+
+    <signal name="devicesAdded">
+        <tp:docstring>
+        One or more devices have been discovered on the network.
+        </tp:docstring>
+        <arg name="devices" type="a{ss}" direction="out">
+            <tp:docstring>
+            A list of the devices as pairs of first udn and second type.
+            </tp:docstring>
+        </arg>
+    </signal>
+
+    <signal name="devicesRemoved">
+        <tp:docstring>
+        One or more devices have disappeared from the network.
+        </tp:docstring>
+        <arg name="devices" type="a{ss}" direction="out">
+            <tp:docstring>
+            A list of the devices as pairs of first udn and second type.
+            </tp:docstring>
+        </arg>
+    </signal>
+</interface>
+</node>
