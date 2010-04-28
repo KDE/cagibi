@@ -28,5 +28,5 @@ target_link_libraries( cagibid
 
 install( TARGETS cagibid  RUNTIME DESTINATION bin )
 
-configure_file( org.kde.cagibi.service.cmake ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Cagibi.service )
+configure_file( org.kde.Cagibi.service.cmake ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Cagibi.service )
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Cagibi.service DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dbus-1/services )
