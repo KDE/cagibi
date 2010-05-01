@@ -54,7 +54,7 @@ const QString& Icon::url() const { return d->url(); }
 void Icon::setProperty( const QString& key, const QString& value )
 {
     d->setProperty( key, value );
-};
+}
 
 
 Icon& Icon::operator=( const Icon& other )

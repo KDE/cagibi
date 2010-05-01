@@ -57,7 +57,7 @@ Device Service::device() const { return d->device(); }
 void Service::setProperty( const QString& key, const QString& value )
 {
     d->setProperty( key, value );
-};
+}
 
 void Service::setReady() { d->setReady(); }
 

@@ -65,7 +65,7 @@ RootDevice* Device::rootDevice() const { return d->rootDevice(); }
 void Device::setProperty( const QString& key, const QString& value )
 {
     d->setProperty( key, value );
-};
+}
 void Device::setRootDevice( RootDevice* rootDevice )
 {
     d->setRootDevice( rootDevice );
