@@ -80,7 +80,7 @@ UPnPProxy::UPnPProxy( QObject* parent )
 
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
     sessionBus.registerService( QString::fromLatin1("org.kde.Cagibi") );
-    sessionBus.registerObject( QString::fromLatin1("/"), this );
+    sessionBus.registerObject( QString::fromLatin1("/org/kde/Cagibi"), this );
 
     connect( mSsdpWatcher, SIGNAL(deviceDiscovered( Cagibi::RootDevice* )),
              SLOT(onDeviceDiscovered( Cagibi::RootDevice* )) );
