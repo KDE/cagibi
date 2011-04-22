@@ -1,7 +1,7 @@
 /*
     This file is part of the Cagibi library, part of the KDE project.
 
-    Copyright 2010 Friedrich W. H. Kossebau <kossebau@kde.org>
+    Copyright 2010-2011 Friedrich W. H. Kossebau <kossebau@kde.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -29,74 +29,87 @@
 #include <QtDBus/QDBusArgument>
 #include <QtCore/QUrl>
 
+static const QString type = QLatin1String("type" );
+static const QString friendlyName = QLatin1String( "friendlyName" );
+static const QString manufacturerName = QLatin1String( "manufacturerName" );
+static const QString modelDescription = QLatin1String( "modelDescription" );
+static const QString modelName = QLatin1String( "modelName" );
+static const QString modelNumber = QLatin1String( "modelNumber" );
+static const QString serialNumber = QLatin1String( "serialNumber" );
+static const QString udn = QLatin1String( "udn" );
+static const QString presentationUrl = QLatin1String( "presentationUrl" );
+static const QString ipAddress = QLatin1String( "ipAddress" );
+static const QString portNumber = QLatin1String( "portNumber" );
+static const QString parentDeviceUdn = QLatin1String( "parentDeviceUdn" );
+
 
 QDBusArgument& operator<<( QDBusArgument& argument, const Cagibi::Device& device )
 {
-    const Cagibi::DevicePrivate* devicePrivate = device.d.constData();
+    const Cagibi::DevicePrivate* const devicePrivate = device.d.constData();
+    const Cagibi::RootDevice* const rootDevice = devicePrivate->rootDevice();
+    const bool isValid = ( rootDevice != 0 );
 
-    argument.beginStructure();
-
-    argument << devicePrivate->type()
-             << devicePrivate->friendlyName()
-             << devicePrivate->manufacturerName()
+    argument.beginMap( QVariant::String, QVariant::String );
+    if( isValid ) // is not valid e.g. if tested for signature
+    {
+        argument.beginMapEntry();
+            argument << type << devicePrivate->type();
+        argument.endMapEntry();
+        argument.beginMapEntry();
+            argument << friendlyName << devicePrivate->friendlyName();
+        argument.endMapEntry();
+        argument.beginMapEntry();
+            argument << manufacturerName << devicePrivate->manufacturerName();
+        argument.endMapEntry();
 //     const QString& manufacturerUrl() const;
-             << devicePrivate->modelDescription()
-             << devicePrivate->modelName()
-             << devicePrivate->modelNumber()
-             << devicePrivate->serialNumber()
-             << devicePrivate->udn()
+        argument.beginMapEntry();
+            argument << modelDescription << devicePrivate->modelDescription();
+        argument.endMapEntry();
+        argument.beginMapEntry();
+            argument << modelName << devicePrivate->modelName();
+        argument.endMapEntry();
+        argument.beginMapEntry();
+            argument << modelNumber << devicePrivate->modelNumber();
+        argument.endMapEntry();
+        argument.beginMapEntry();
+            argument << serialNumber << devicePrivate->serialNumber();
+        argument.endMapEntry();
+        argument.beginMapEntry();
+            argument << udn << devicePrivate->udn();
+        argument.endMapEntry();
 //     const QString upc() const;
-             << devicePrivate->presentationUrl();
+        argument.beginMapEntry();
+            argument << presentationUrl << devicePrivate->presentationUrl();
+        argument.endMapEntry();
 
-    Cagibi::RootDevice* rootDevice = devicePrivate->rootDevice();
-    QUrl location = rootDevice ? rootDevice->location() : QUrl();
-    argument << location.host()
-             << location.port();
+        const QUrl& location = rootDevice->location();
+        argument.beginMapEntry();
+            argument << ipAddress << location.host();
+        argument.endMapEntry();
+        argument.beginMapEntry();
+            argument << portNumber << QString::number(location.port());
+        argument.endMapEntry();
 
-    argument << ( devicePrivate->hasParentDevice() ?
-        devicePrivate->parentDevice().udn() :
-        QString() );
-
+        if( devicePrivate->hasParentDevice() )
+        {
+        argument.beginMapEntry();
+            argument << parentDeviceUdn << devicePrivate->parentDevice().udn();
+        argument.endMapEntry();
+        }
 //     const QList<Icon>& icons() const;
 //     const QList<Service>& services() const;
 //     const QList<Device>& devices() const;
-
-    argument.endStructure();
+    }
+    argument.endMap();
 
     return argument;
 }
 
+// not used currently, so noop, but symbol needed for QtDBus integration
 const QDBusArgument& operator>>( const QDBusArgument& argument,
                                  Cagibi::Device& device )
 {
-    Cagibi::DevicePrivate* devicePrivate = device.d.data();
-
-    argument.beginStructure();
-
-    argument >> devicePrivate->mType
-             >> devicePrivate->mFriendlyName
-             >> devicePrivate->mManufacturerName
-//     const QString& manufacturerUrl() const;
-             >> devicePrivate->mModelDescription
-             >> devicePrivate->mModelName
-             >> devicePrivate->mModelNumber
-             >> devicePrivate->mSerialNumber
-             >> devicePrivate->mUdn
-//     const QString upc() const;
-             >> devicePrivate->mPresentationUrl;
-
-
-    QString parentDeviceUdn;
-    argument >> parentDeviceUdn;
-//     << ( devicePrivate->hasParentDevice() ?
-//         devicePrivate->parentDevice().udn() :
-//         QString() );
-
-//     const QList<Icon>& icons() const;
-//     const QList<Service>& services() const;
-//     const QList<Device>& devices() const;
-
-    argument.endStructure();
+    Q_UNUSED( device )
 
     return argument;
 }

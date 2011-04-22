@@ -44,9 +44,9 @@
         Get the details of the device with the given udn.
         </tp:docstring>
         <arg name="udn" type="s" direction="in"/>
-        <arg type="(ssssssssssis)" direction="out">
+        <arg type="a{ss}" direction="out">
             <tp:docstring>
-            Details of the device. TODO: turn into StringVariantMap to be extendable
+            Details of the device, passed in a StringStringMap
             </tp:docstring>
         </arg>
     </method>
