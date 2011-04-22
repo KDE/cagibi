@@ -1,7 +1,7 @@
 /*
     This file is part of the Cagibi daemon, part of the KDE project.
 
-    Copyright 2010 Friedrich W. H. Kossebau <kossebau@kde.org>
+    Copyright 2010-2011 Friedrich W. H. Kossebau <kossebau@kde.org>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License as
@@ -78,9 +78,9 @@ UPnPProxy::UPnPProxy( QObject* parent )
 {
     new UPnPProxyDBusAdaptor( this );
 
-    QDBusConnection sessionBus = QDBusConnection::sessionBus();
-    sessionBus.registerService( QString::fromLatin1("org.kde.Cagibi") );
-    sessionBus.registerObject( QString::fromLatin1("/org/kde/Cagibi"), this );
+    QDBusConnection dBusConnection = QDBusConnection::systemBus();
+    dBusConnection.registerService( QLatin1String("org.kde.Cagibi") );
+    dBusConnection.registerObject( QLatin1String("/org/kde/Cagibi"), this );
 
     connect( mSsdpWatcher, SIGNAL(deviceDiscovered( Cagibi::RootDevice* )),
              SLOT(onDeviceDiscovered( Cagibi::RootDevice* )) );
