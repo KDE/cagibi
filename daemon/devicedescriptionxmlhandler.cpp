@@ -167,7 +167,6 @@ bool DeviceDescriptionXMLHandler::endElement( const QString& namespaceURI, const
         mCurrentDevice.setRootDevice( mRootDevice );
         if( mStatusStack.top() == RootElement )
         {
-qDebug()<<mCurrentDevice.friendlyName();
             mRootDevice->setDevice( mCurrentDevice );
         }
         else

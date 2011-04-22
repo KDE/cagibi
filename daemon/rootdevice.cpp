@@ -86,7 +86,7 @@ qDebug() << mError;
     else
     {
         const QByteArray deviceDescriptionData = reply->readAll();
-qDebug()<< QString::fromAscii(deviceDescriptionData);
+// qDebug()<< QString::fromAscii(deviceDescriptionData);
         success = parseDeviceDescription( this, deviceDescriptionData, &mError );
     }
     reply->deleteLater();

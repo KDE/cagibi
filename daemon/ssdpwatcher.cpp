@@ -332,7 +332,6 @@ void SSDPWatcher::onUdpSocketReadyRead()
     if( bytesRead == -1 )
         // TODO: error handling
         return;
-qDebug()<<QString::fromAscii(message);
 
     handleMessage( message );
 }

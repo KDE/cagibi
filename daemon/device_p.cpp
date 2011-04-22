@@ -45,7 +45,7 @@ const char* const DevicePrivate::keys[] =
 
 void DevicePrivate::addIcon( const Icon& icon )
 {
-qDebug()<<icon.url()<<icon.width()<<"x"<<icon.height();
+// qDebug()<<icon.url()<<icon.width()<<"x"<<icon.height();
     mIcons.append( icon );
 }
 
@@ -54,7 +54,7 @@ void DevicePrivate::addService( const Service& service )
     const QString& type = service.type();
     const QString actionId =  QString::fromLatin1( "GetStatusInfo" );
     const QString& url = service.controlUrl();
-qDebug()<<type<<url;
+// qDebug()<<type<<url;
 // TODO
 #if 0
     mSoapAgent->sendCommand( type, actionId, url, QVariant::fromValue<Service>(service) );
@@ -66,7 +66,7 @@ qDebug()<<type<<url;
 
 void DevicePrivate::addDevice( const Device& device )
 {
-qDebug()<<device.friendlyName();
+// qDebug()<<device.friendlyName();
     device.d.data()->setParentDevicePrivate( this );
     mDevices.append( device );
 }
