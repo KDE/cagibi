@@ -1,6 +1,7 @@
 project( Cagibi )
 
 cmake_minimum_required(VERSION 2.4.5 FATAL_ERROR)
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 set(CMAKE_MODULE_PATH "${Cagibi_SOURCE_DIR}/cmake/modules")
 
