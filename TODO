@@ -1,0 +1,10 @@
+* look for good device details keys (like in UPnP spec?)
+* find a way to publish the keys used in the devicedetails lookup table
+
+* If daemon crashes/gets killed, on restart it might emit devices again as new
+Should clients be aware of that?
+Could there be a log (devicesAddedToBeEmitted) so on restart current state for clients is known?
+But what if cleanup fails after emitting?
+Perhaps better to tell the clients "Got a problem, here is current list of known devices", again with signal (by finding a lock file or similar)
+
+* shutdown time should be configurable by config file
