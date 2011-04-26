@@ -27,11 +27,14 @@
 #include "ssdpwatcher.h"
 #include "rootdevice.h"
 #include "device.h"
-
+// Qt
+#include <QtCore/QTimer>
 #include <QtCore/QDebug>
 
 namespace Cagibi
 {
+
+static const int shutDownTimeout = 5000; // in msec;
 
 static void fillMap( DeviceTypeMap& map, const Device& device )
 {
@@ -74,20 +77,32 @@ static const Device* find( const Device& device, const QString& udn )
 
 UPnPProxy::UPnPProxy( QObject* parent )
   : QObject( parent ),
-    mSsdpWatcher( new SSDPWatcher(this) )
+    mSsdpWatcher( new SSDPWatcher(this) ),
+    mShutsDownOnNoActivity( false )
 {
+    // publish service on D-Bus
     new UPnPProxyDBusAdaptor( this );
 
     QDBusConnection dBusConnection = QDBusConnection::systemBus();
     dBusConnection.registerService( QLatin1String("org.kde.Cagibi") );
     dBusConnection.registerObject( QLatin1String("/org/kde/Cagibi"), this );
 
+    // install listener to UPnP changes
     connect( mSsdpWatcher, SIGNAL(deviceDiscovered( Cagibi::RootDevice* )),
              SLOT(onDeviceDiscovered( Cagibi::RootDevice* )) );
     connect( mSsdpWatcher, SIGNAL(deviceRemoved( Cagibi::RootDevice* )),
              SLOT(onDeviceRemoved( Cagibi::RootDevice* )) );
 
     mSsdpWatcher->discover();
+
+    // setup timer to shutdown on no UPnP activity
+    mShutDownTimer = new QTimer( this );
+    mShutDownTimer->setInterval( shutDownTimeout );
+    mShutDownTimer->setSingleShot( true );
+    connect( mShutDownTimer, SIGNAL(timeout()), SLOT(shutDown()) );
+    // initially no devices known -> prepare shutdown
+    if( mShutsDownOnNoActivity )
+        mShutDownTimer->start();
 }
 
 DeviceTypeMap UPnPProxy::allDevices() const
@@ -101,6 +116,10 @@ DeviceTypeMap UPnPProxy::allDevices() const
         const Device device = rootDevice->device();
         fillMap( result, device );
     }
+
+    // being used, so reset the shutdown timer if active
+    if( mShutDownTimer->isActive() )
+        mShutDownTimer->start();
 
     return result;
 }
@@ -128,6 +147,10 @@ DeviceTypeMap UPnPProxy::devicesByParent( const QString& udn ) const
             }
         }
     }
+
+    // being used, so reset the shutdown timer if active
+    if( mShutDownTimer->isActive() )
+        mShutDownTimer->start();
 
     return result;
 }
@@ -180,6 +203,8 @@ void UPnPProxy::onDeviceDiscovered( RootDevice* rootDevice )
     const Device device = rootDevice->device();
     fillMap( devices, device );
 
+    mShutDownTimer->stop();
+
     emit devicesAdded( devices );
 }
 
@@ -189,6 +214,9 @@ void UPnPProxy::onDeviceRemoved( RootDevice* rootDevice )
 
     const Device device = rootDevice->device();
     fillMap( devices, device );
+
+    if( mShutsDownOnNoActivity && mSsdpWatcher->devicesCount() == 0 )
+        mShutDownTimer->start();
 
     emit devicesRemoved( devices );
 }

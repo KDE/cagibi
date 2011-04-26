@@ -29,6 +29,8 @@
 #include <QtCore/QString>
 #include <QtCore/QMetaType>
 
+class QTimer;
+
 typedef QHash<QString,QString> DeviceTypeMap;
 Q_DECLARE_METATYPE( DeviceTypeMap )
 
@@ -54,7 +56,7 @@ class UPnPProxy : public QObject
     DeviceTypeMap devicesByType( const QString& type ) const;
     Device deviceDetails( const QString& udn ) const;
 
-  public:
+  public Q_SLOTS:
     // shut the proxy server down
     void shutDown();
 
@@ -68,6 +70,9 @@ class UPnPProxy : public QObject
 
   private:
     SSDPWatcher* mSsdpWatcher;
+    QTimer* mShutDownTimer;
+
+    bool mShutsDownOnNoActivity : 1;
 };
 
 }
