@@ -1,7 +1,7 @@
 /*
     This file is part of the Cagibi daemon.
 
-    Copyright 2010 Friedrich W. H. Kossebau <kossebau@kde.org>
+    Copyright 2010-2011 Friedrich W. H. Kossebau <kossebau@kde.org>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License as
@@ -63,6 +63,12 @@ Device UPnPProxyDBusAdaptor::deviceDetails( const QString& udn ) const
 {
     return parent()->deviceDetails( udn );
 }
+
+void UPnPProxyDBusAdaptor::shutDown()
+{
+    parent()->shutDown();
+}
+
 
 UPnPProxyDBusAdaptor::~UPnPProxyDBusAdaptor()
 {

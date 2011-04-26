@@ -168,6 +168,11 @@ Device UPnPProxy::deviceDetails( const QString& udn ) const
     return result;
 }
 
+void UPnPProxy::shutDown()
+{
+    qApp->quit();
+}
+
 void UPnPProxy::onDeviceDiscovered( RootDevice* rootDevice )
 {
     DeviceTypeMap devices;

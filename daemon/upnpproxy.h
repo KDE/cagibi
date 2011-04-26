@@ -1,7 +1,7 @@
 /*
     This file is part of the Cagibi daemon.
 
-    Copyright 2010 Friedrich W. H. Kossebau <kossebau@kde.org>
+    Copyright 2010-2011 Friedrich W. H. Kossebau <kossebau@kde.org>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License as
@@ -53,6 +53,10 @@ class UPnPProxy : public QObject
     DeviceTypeMap devicesByParent( const QString& udn ) const;
     DeviceTypeMap devicesByType( const QString& type ) const;
     Device deviceDetails( const QString& udn ) const;
+
+  public:
+    // shut the proxy server down
+    void shutDown();
 
   Q_SIGNALS:
     void devicesAdded( const DeviceTypeMap& devices );
