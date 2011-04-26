@@ -1,5 +1,5 @@
 /*
-    This file is part of the Cagibi daemon, part of the KDE project.
+    This file is part of the Cagibi daemon.
 
     Copyright 2010-2011 Friedrich W. H. Kossebau <kossebau@kde.org>
 
