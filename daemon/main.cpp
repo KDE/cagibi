@@ -1,7 +1,7 @@
 /*
     This file is part of the Cagibi daemon.
 
-    Copyright 2009 Friedrich W. H. Kossebau <kossebau@kde.org>
+    Copyright 2009,2011 Friedrich W. H. Kossebau <kossebau@kde.org>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License as
@@ -23,22 +23,14 @@
 // program
 #include "upnpproxy.h"
 // Qt
-#include <QtDBus/QDBusConnection>
 #include <QtCore/QCoreApplication>
 
-// #include <KApplication>
-// #include <kaboutdata.h>
-// #include <kcmdlineargs.h>
 
 int main( int argc, char* argv[] )
 {
     QCoreApplication programCore( argc, argv );
-//     KAboutData about("cagibi", "cagibi", ki18n("Cagibi Daemon"), "", ki18n("Cagibi Daemon"), KAboutData::License_GPL, ki18n("Copyright icke"));
 
-//     KCmdLineArgs::init(argc, argv, &about);
-//     KApplication programCore;
-
-    new Cagibi::UPnPProxy();
+    Cagibi::UPnPProxy p;
 
     const int result = programCore.exec();
 
