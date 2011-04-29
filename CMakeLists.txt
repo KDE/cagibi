@@ -17,4 +17,10 @@ set(CAGIBI_VERSION "${CAGIBI_VERSION_MAJOR}.${CAGIBI_VERSION_MINOR}.${CAGIBI_VER
 
 set(SYSCONF_INSTALL_DIR  "${CMAKE_INSTALL_PREFIX}/etc")
 
+if (NOT DEFINED CAGIBI_DAEMON_SHUTDOWN_SECS)
+  set(CAGIBI_DAEMON_SHUTDOWN_SECS "0" CACHE STRING "Default time without services and activity to trigger shutdown (0 = no shutdown)")
+endif()
+
+add_definitions(-DCAGIBI_DAEMON_SHUTDOWN_SECS=${CAGIBI_DAEMON_SHUTDOWN_SECS})
+
 add_subdirectory( daemon )

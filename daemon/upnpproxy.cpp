@@ -34,7 +34,7 @@
 namespace Cagibi
 {
 
-static const int defaultShutDownTimeout = 5;
+static const int defaultShutDownTimeout = CAGIBI_DAEMON_SHUTDOWN_SECS;
 
 static void fillMap( DeviceTypeMap& map, const Device& device )
 {
