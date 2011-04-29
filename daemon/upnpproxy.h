@@ -69,11 +69,16 @@ class UPnPProxy : public QObject
     void onDeviceRemoved( Cagibi::RootDevice* rootDevice );
 
   private:
+    bool shutsDownOnNoActivity() const;
+
+  private:
     SSDPWatcher* mSsdpWatcher;
     QTimer* mShutDownTimer;
 
-    bool mShutsDownOnNoActivity : 1;
+    int mShutDownTimeout;
 };
+
+inline bool UPnPProxy::shutsDownOnNoActivity() const { return mShutDownTimeout != 0; }
 
 }
 

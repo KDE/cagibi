@@ -34,7 +34,7 @@
 namespace Cagibi
 {
 
-static const int shutDownTimeout = 5000; // in msec;
+static const int defaultShutDownTimeout = 5;
 
 static void fillMap( DeviceTypeMap& map, const Device& device )
 {
@@ -78,7 +78,7 @@ static const Device* find( const Device& device, const QString& udn )
 UPnPProxy::UPnPProxy( QObject* parent )
   : QObject( parent ),
     mSsdpWatcher( new SSDPWatcher(this) ),
-    mShutsDownOnNoActivity( false )
+    mShutDownTimeout( defaultShutDownTimeout )
 {
     // publish service on D-Bus
     new UPnPProxyDBusAdaptor( this );
@@ -97,11 +97,11 @@ UPnPProxy::UPnPProxy( QObject* parent )
 
     // setup timer to shutdown on no UPnP activity
     mShutDownTimer = new QTimer( this );
-    mShutDownTimer->setInterval( shutDownTimeout );
+    mShutDownTimer->setInterval( mShutDownTimeout * 1000 ); // in msec
     mShutDownTimer->setSingleShot( true );
     connect( mShutDownTimer, SIGNAL(timeout()), SLOT(shutDown()) );
     // initially no devices known -> prepare shutdown
-    if( mShutsDownOnNoActivity )
+    if( shutsDownOnNoActivity() )
         mShutDownTimer->start();
 }
 
@@ -215,7 +215,7 @@ void UPnPProxy::onDeviceRemoved( RootDevice* rootDevice )
     const Device device = rootDevice->device();
     fillMap( devices, device );
 
-    if( mShutsDownOnNoActivity && mSsdpWatcher->devicesCount() == 0 )
+    if( shutsDownOnNoActivity() && mSsdpWatcher->devicesCount() == 0 )
         mShutDownTimer->start();
 
     emit devicesRemoved( devices );
