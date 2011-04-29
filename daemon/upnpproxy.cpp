@@ -29,6 +29,7 @@
 #include "device.h"
 // Qt
 #include <QtCore/QTimer>
+#include <QtCore/QSettings>
 #include <QtCore/QDebug>
 
 namespace Cagibi
@@ -77,9 +78,15 @@ static const Device* find( const Device& device, const QString& udn )
 
 UPnPProxy::UPnPProxy( QObject* parent )
   : QObject( parent ),
-    mSsdpWatcher( new SSDPWatcher(this) ),
-    mShutDownTimeout( defaultShutDownTimeout )
+    mSsdpWatcher( new SSDPWatcher(this) )
 {
+    QSettings::setPath( QSettings::NativeFormat, QSettings::SystemScope,
+                        QLatin1String(SYSCONF_INSTALL_DIR) );
+    QSettings settings( QSettings::SystemScope, QLatin1String("cagibid") );
+    mShutDownTimeout =
+        settings.value( QLatin1String("ShutDownTimeout"),
+                        defaultShutDownTimeout ).toInt();
+
     // publish service on D-Bus
     new UPnPProxyDBusAdaptor( this );
 

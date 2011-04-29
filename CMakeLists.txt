@@ -21,6 +21,6 @@ if (NOT DEFINED CAGIBI_DAEMON_SHUTDOWN_SECS)
   set(CAGIBI_DAEMON_SHUTDOWN_SECS "0" CACHE STRING "Default time without services and activity to trigger shutdown (0 = no shutdown)")
 endif()
 
-add_definitions(-DCAGIBI_DAEMON_SHUTDOWN_SECS=${CAGIBI_DAEMON_SHUTDOWN_SECS})
+add_definitions(-DCAGIBI_DAEMON_SHUTDOWN_SECS=${CAGIBI_DAEMON_SHUTDOWN_SECS} -DSYSCONF_INSTALL_DIR=\\"${SYSCONF_INSTALL_DIR}\\")
 
 add_subdirectory( daemon )
