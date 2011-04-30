@@ -1,6 +1,8 @@
-0.2.0 
+0.2.0
+* config file to adjust behaviour
 * option to shutdown on no UPnP activity
 * running on system D-Bus
 * deviceDetails as lookuptable, D-Bus signature a{ss}
 
-0.1.0 - initial release
+0.1.0
+* initial release
