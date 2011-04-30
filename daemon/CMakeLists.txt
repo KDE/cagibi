@@ -32,3 +32,8 @@ configure_file( org.kde.Cagibi.service.cmake ${CMAKE_CURRENT_BINARY_DIR}/org.kde
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Cagibi.service DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dbus-1/system-services )
 install( FILES org.kde.Cagibi.conf DESTINATION ${SYSCONF_INSTALL_DIR}/dbus-1/system.d/ )
 
+set( cagibid_CONF_NAME cagibid.conf )
+set( cagibid_CONF ${CMAKE_CURRENT_BINARY_DIR}/${cagibid_CONF_NAME} )
+configure_file( ${cagibid_CONF_NAME}.cmake ${cagibid_CONF} )
+install( FILES ${cagibid_CONF}  DESTINATION ${SYSCONF_INSTALL_DIR} )
+
