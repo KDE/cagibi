@@ -90,7 +90,12 @@ UPnPProxy::UPnPProxy( QObject* parent )
     const int searchTimeout =
         settings.value( QLatin1String("SearchTimeout"),
                         defaultSearchTimeout ).toInt();
-    mSsdpWatcher->setSearchTimeout( searchTimeout );
+
+    // setup timer to shutdown on no UPnP activity
+    mShutDownTimer = new QTimer( this );
+    mShutDownTimer->setInterval( mShutDownTimeout * 1000 ); // in msec
+    mShutDownTimer->setSingleShot( true );
+    connect( mShutDownTimer, SIGNAL(timeout()), SLOT(shutDown()) );
 
     // publish service on D-Bus
     new UPnPProxyDBusAdaptor( this );
@@ -104,17 +109,10 @@ UPnPProxy::UPnPProxy( QObject* parent )
              SLOT(onDeviceDiscovered( Cagibi::RootDevice* )) );
     connect( mSsdpWatcher, SIGNAL(deviceRemoved( Cagibi::RootDevice* )),
              SLOT(onDeviceRemoved( Cagibi::RootDevice* )) );
+    connect( mSsdpWatcher, SIGNAL(initialSearchCompleted()),
+             SLOT(onInitialSearchCompleted()) );
 
-    mSsdpWatcher->discover();
-
-    // setup timer to shutdown on no UPnP activity
-    mShutDownTimer = new QTimer( this );
-    mShutDownTimer->setInterval( mShutDownTimeout * 1000 ); // in msec
-    mShutDownTimer->setSingleShot( true );
-    connect( mShutDownTimer, SIGNAL(timeout()), SLOT(shutDown()) );
-    // initially no devices known -> prepare shutdown
-    if( shutsDownOnNoActivity() )
-        mShutDownTimer->start();
+    mSsdpWatcher->startDiscover( searchTimeout );
 }
 
 DeviceTypeMap UPnPProxy::allDevices() const
@@ -206,6 +204,12 @@ Device UPnPProxy::deviceDetails( const QString& udn ) const
 void UPnPProxy::shutDown()
 {
     qApp->quit();
+}
+
+void UPnPProxy::onInitialSearchCompleted()
+{
+    if( shutsDownOnNoActivity() && mSsdpWatcher->devicesCount() == 0 )
+        mShutDownTimer->start();
 }
 
 void UPnPProxy::onDeviceDiscovered( RootDevice* rootDevice )

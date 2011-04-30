@@ -40,9 +40,6 @@ class SSDPWatcher : public QObject
 {
   Q_OBJECT
 
-public:
-    static const int searchTimeOut = CAGIBI_DAEMON_SEARCH_TIMEOUT_SECS;
-
   public:
     explicit SSDPWatcher( QObject* parent = 0 );
 
@@ -53,12 +50,10 @@ public:
     QList<RootDevice*> devices() const;
 
   public Q_SLOTS:
-    void discover();
-
-  public:
-    void setSearchTimeout( int searchTimeout );
+    void startDiscover( int searchTimeout );
 
   Q_SIGNALS:
+    void initialSearchCompleted();
     void deviceDiscovered( Cagibi::RootDevice* device );
     void deviceRemoved( Cagibi::RootDevice* device );
 
@@ -70,20 +65,18 @@ public:
     void onUdpSocketError( QAbstractSocket::SocketError error );
     void onDeviceDescriptionDownloadDone( RootDevice* device, bool success );
     void onCacheTimedOut( RootDevice* device );
+    void onSearchTimeout();
 
   protected:
     QHash<QString,RootDevice*> mDevices;
     QSet<RootDevice*> mPendingDevices;
 
     QUdpSocket* mUdpSocket;
-
-    int mSearchTimeout;
 };
 
 
 inline int SSDPWatcher::devicesCount() const { return mDevices.count(); }
 inline QList<RootDevice*> SSDPWatcher::devices() const { return mDevices.values(); }
-inline void SSDPWatcher::setSearchTimeout( int searchTimeout ) { mSearchTimeout = searchTimeout; }
 
 }
 

@@ -65,6 +65,7 @@ class UPnPProxy : public QObject
     void devicesRemoved( const DeviceTypeMap& devices );
 
   private Q_SLOTS:
+    void onInitialSearchCompleted();
     void onDeviceDiscovered( Cagibi::RootDevice* rootDevice );
     void onDeviceRemoved( Cagibi::RootDevice* rootDevice );
 

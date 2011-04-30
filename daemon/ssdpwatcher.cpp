@@ -26,6 +26,7 @@
 #include "rootdevice.h"
 // Qt
 #include <QtNetwork/QUdpSocket>
+#include <QtCore/QTimer>
 #include <QtCore/QUrl>
 #include <QtCore/QStringList>
 // C
@@ -111,7 +112,7 @@ qDebug() << "Cannot bind to UDP port "<< SSDPPortNumber << ":" << mUdpSocket->er
 }
 
 
-void SSDPWatcher::discover()
+void SSDPWatcher::startDiscover( int searchTimeout )
 {
 qDebug() << "Trying to find UPnP devices on the local network";
 
@@ -122,10 +123,11 @@ qDebug() << "Trying to find UPnP devices on the local network";
         "ST:"ROOTDEVICE"\r\n"
 //         "ST: ssdp:all\r\n"
         "MAN:\"ssdp:discover\"\r\n"
-        "MX:" + QByteArray::number(mSearchTimeout) + "\r\n" // max number of seconds to wait for response
+        "MX:" + QByteArray::number(searchTimeout) + "\r\n" // max number of seconds to wait for response
         "\r\n";
 
     mUdpSocket->writeDatagram( searchMessage.constData(), searchMessage.size(), QHostAddress(SSDPBroadCastAddress), SSDPPortNumber );
+    QTimer::singleShot( searchTimeout * 1000, this, SLOT(onSearchTimeout()) );
 }
 
 
@@ -342,6 +344,10 @@ void SSDPWatcher::onUdpSocketError( QAbstractSocket::SocketError error )
 qDebug() << "SSDPWatcher Error : " << mUdpSocket->errorString();
 }
 
+void SSDPWatcher::onSearchTimeout()
+{
+    emit initialSearchCompleted();
+}
 
 SSDPWatcher::~SSDPWatcher()
 {
