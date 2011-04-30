@@ -37,7 +37,7 @@ namespace Cagibi
 class UPnPProxyDBusAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.kde.Cagibi")
+    Q_CLASSINFO("D-Bus Interface", "org.kde.Cagibi.DeviceList")
 
   public:
     explicit UPnPProxyDBusAdaptor( UPnPProxy* parent );

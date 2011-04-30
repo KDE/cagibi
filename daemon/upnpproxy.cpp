@@ -102,7 +102,7 @@ UPnPProxy::UPnPProxy( QObject* parent )
 
     QDBusConnection dBusConnection = QDBusConnection::systemBus();
     dBusConnection.registerService( QLatin1String("org.kde.Cagibi") );
-    dBusConnection.registerObject( QLatin1String("/org/kde/Cagibi"), this );
+    dBusConnection.registerObject( QLatin1String("/org/kde/Cagibi/DeviceList"), this );
 
     // install listener to UPnP changes
     connect( mSsdpWatcher, SIGNAL(deviceDiscovered( Cagibi::RootDevice* )),
