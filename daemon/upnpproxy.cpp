@@ -239,6 +239,10 @@ void UPnPProxy::onDeviceRemoved( RootDevice* rootDevice )
 
 UPnPProxy::~UPnPProxy()
 {
+    // simulate that all devices are removed
+    const QList<RootDevice*> rootDevices = mSsdpWatcher->devices();
+    foreach( RootDevice* rootDevice, rootDevices )
+        onDeviceRemoved( rootDevice );
 }
 
 }
