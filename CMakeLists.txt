@@ -21,6 +21,14 @@ if (NOT DEFINED CAGIBI_DAEMON_SHUTDOWN_SECS)
   set(CAGIBI_DAEMON_SHUTDOWN_SECS "0" CACHE STRING "Default time without services and activity to trigger shutdown (0 = no shutdown)")
 endif()
 
-add_definitions(-DCAGIBI_DAEMON_SHUTDOWN_SECS=${CAGIBI_DAEMON_SHUTDOWN_SECS} -DSYSCONF_INSTALL_DIR=\\"${SYSCONF_INSTALL_DIR}\\")
+if (NOT DEFINED CAGIBI_DAEMON_SEARCH_TIMEOUT_SECS)
+  set(CAGIBI_DAEMON_SEARCH_TIMEOUT_SECS "3" CACHE STRING "Default search timeout when querying for devices on a new network")
+endif()
+
+add_definitions(
+  -DCAGIBI_DAEMON_SHUTDOWN_SECS=${CAGIBI_DAEMON_SHUTDOWN_SECS}
+  -DCAGIBI_DAEMON_SEARCH_TIMEOUT_SECS=${CAGIBI_DAEMON_SEARCH_TIMEOUT_SECS}
+  -DSYSCONF_INSTALL_DIR=\\"${SYSCONF_INSTALL_DIR}\\"
+)
 
 add_subdirectory( daemon )

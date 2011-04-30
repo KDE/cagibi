@@ -1,7 +1,7 @@
 /*
     This file is part of the Cagibi daemon.
 
-    Copyright 2009-2010 Friedrich W. H. Kossebau <kossebau@kde.org>
+    Copyright 2009-2011 Friedrich W. H. Kossebau <kossebau@kde.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -116,17 +116,16 @@ void SSDPWatcher::discover()
 qDebug() << "Trying to find UPnP devices on the local network";
 
     // send a HTTP M-SEARCH message to 239.255.255.250:1900
-    const char mSearchMessage[] =
+    const QByteArray searchMessage =
         "M-SEARCH * HTTP/1.1\r\n"
         "HOST: "SSDP_BROADCAST_ADDRESS":"SSDP_PORT"\r\n"
         "ST:"ROOTDEVICE"\r\n"
 //         "ST: ssdp:all\r\n"
         "MAN:\"ssdp:discover\"\r\n"
-        "MX:3\r\n" // max number of seconds to wait for response
+        "MX:" + QByteArray::number(mSearchTimeout) + "\r\n" // max number of seconds to wait for response
         "\r\n";
-    const int mSearchMessageLength = sizeof(mSearchMessage) / sizeof(mSearchMessage[0]);
 
-    mUdpSocket->writeDatagram( mSearchMessage, mSearchMessageLength, QHostAddress(SSDPBroadCastAddress), SSDPPortNumber );
+    mUdpSocket->writeDatagram( searchMessage.constData(), searchMessage.size(), QHostAddress(SSDPBroadCastAddress), SSDPPortNumber );
 }
 
 

@@ -36,6 +36,7 @@ namespace Cagibi
 {
 
 static const int defaultShutDownTimeout = CAGIBI_DAEMON_SHUTDOWN_SECS;
+static const int defaultSearchTimeout = CAGIBI_DAEMON_SEARCH_TIMEOUT_SECS;
 
 static void fillMap( DeviceTypeMap& map, const Device& device )
 {
@@ -86,6 +87,10 @@ UPnPProxy::UPnPProxy( QObject* parent )
     mShutDownTimeout =
         settings.value( QLatin1String("ShutDownTimeout"),
                         defaultShutDownTimeout ).toInt();
+    const int searchTimeout =
+        settings.value( QLatin1String("SearchTimeout"),
+                        defaultSearchTimeout ).toInt();
+    mSsdpWatcher->setSearchTimeout( searchTimeout );
 
     // publish service on D-Bus
     new UPnPProxyDBusAdaptor( this );

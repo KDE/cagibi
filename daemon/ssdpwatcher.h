@@ -1,7 +1,7 @@
 /*
     This file is part of the Cagibi daemon.
 
-    Copyright 2009-2010 Friedrich W. H. Kossebau <kossebau@kde.org>
+    Copyright 2009-2011 Friedrich W. H. Kossebau <kossebau@kde.org>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -40,6 +40,9 @@ class SSDPWatcher : public QObject
 {
   Q_OBJECT
 
+public:
+    static const int searchTimeOut = CAGIBI_DAEMON_SEARCH_TIMEOUT_SECS;
+
   public:
     explicit SSDPWatcher( QObject* parent = 0 );
 
@@ -51,6 +54,9 @@ class SSDPWatcher : public QObject
 
   public Q_SLOTS:
     void discover();
+
+  public:
+    void setSearchTimeout( int searchTimeout );
 
   Q_SIGNALS:
     void deviceDiscovered( Cagibi::RootDevice* device );
@@ -70,11 +76,14 @@ class SSDPWatcher : public QObject
     QSet<RootDevice*> mPendingDevices;
 
     QUdpSocket* mUdpSocket;
+
+    int mSearchTimeout;
 };
 
 
 inline int SSDPWatcher::devicesCount() const { return mDevices.count(); }
 inline QList<RootDevice*> SSDPWatcher::devices() const { return mDevices.values(); }
+inline void SSDPWatcher::setSearchTimeout( int searchTimeout ) { mSearchTimeout = searchTimeout; }
 
 }
 
