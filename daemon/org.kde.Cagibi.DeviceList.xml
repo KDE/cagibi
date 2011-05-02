@@ -51,12 +51,6 @@
         </arg>
     </method>
 
-    <method name="shutDown">
-        <tp:docstring>
-        Shuts the proxy server down.
-        </tp:docstring>
-    </method>
-
     <!-- SIGNALS -->
 
     <signal name="devicesAdded">

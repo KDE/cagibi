@@ -20,7 +20,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "upnpproxydbusadaptor.h"
+#include "devicelistdbusadaptor.h"
 
 // daemon
 #include "dbuscodec.h"
@@ -31,7 +31,7 @@
 namespace Cagibi
 {
 
-UPnPProxyDBusAdaptor::UPnPProxyDBusAdaptor( UPnPProxy* parent )
+DeviceListDBusAdaptor::DeviceListDBusAdaptor( DeviceList* parent )
   : QDBusAbstractAdaptor( parent )
 {
     connect( parent, SIGNAL(devicesAdded(DeviceTypeMap)),
@@ -44,33 +44,27 @@ UPnPProxyDBusAdaptor::UPnPProxyDBusAdaptor( UPnPProxy* parent )
     qDBusRegisterMetaType<Cagibi::Device>();
 }
 
-DeviceTypeMap UPnPProxyDBusAdaptor::allDevices() const
+DeviceTypeMap DeviceListDBusAdaptor::allDevices() const
 {
     return parent()->allDevices();
 }
 
-DeviceTypeMap UPnPProxyDBusAdaptor::devicesByParent( const QString& udn ) const
+DeviceTypeMap DeviceListDBusAdaptor::devicesByParent( const QString& udn ) const
 {
     return parent()->devicesByParent( udn );
 }
 
-DeviceTypeMap UPnPProxyDBusAdaptor::devicesByType( const QString& type ) const
+DeviceTypeMap DeviceListDBusAdaptor::devicesByType( const QString& type ) const
 {
     return parent()->devicesByType( type );
 }
 
-Device UPnPProxyDBusAdaptor::deviceDetails( const QString& udn ) const
+Device DeviceListDBusAdaptor::deviceDetails( const QString& udn ) const
 {
     return parent()->deviceDetails( udn );
 }
 
-void UPnPProxyDBusAdaptor::shutDown()
-{
-    parent()->shutDown();
-}
-
-
-UPnPProxyDBusAdaptor::~UPnPProxyDBusAdaptor()
+DeviceListDBusAdaptor::~DeviceListDBusAdaptor()
 {
 }
 

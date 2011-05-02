@@ -20,66 +20,45 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef UPNPPROXY_H
-#define UPNPPROXY_H
+#ifndef DEVICELISTDBUSADAPTOR_H
+#define DEVICELISTDBUSADAPTOR_H
 
+// program
+#include "devicelist.h"
+#include "dbuscodec.h"
 // Qt
-#include <QtCore/QObject>
-#include <QtCore/QHash>
-#include <QtCore/QString>
-#include <QtCore/QMetaType>
-
-class QTimer;
-
-typedef QHash<QString,QString> DeviceTypeMap;
-Q_DECLARE_METATYPE( DeviceTypeMap )
+#include <QtDBus/QtDBus>
 
 
 namespace Cagibi
 {
-class SSDPWatcher;
-class RootDevice;
-class Device;
 
-
-class UPnPProxy : public QObject
+class DeviceListDBusAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.kde.Cagibi.DeviceList")
 
   public:
-    explicit UPnPProxy( QObject* parent = 0 );
-    virtual ~UPnPProxy();
+    explicit DeviceListDBusAdaptor( DeviceList* parent );
+
+    virtual ~DeviceListDBusAdaptor();
 
   public:
+    DeviceList* parent() const;
+
+  public Q_SLOTS:
     DeviceTypeMap allDevices() const;
     DeviceTypeMap devicesByParent( const QString& udn ) const;
     DeviceTypeMap devicesByType( const QString& type ) const;
-    Device deviceDetails( const QString& udn ) const;
-
-  public Q_SLOTS:
-    // shut the proxy server down
-    void shutDown();
+    Cagibi::Device deviceDetails( const QString& udn ) const;
 
   Q_SIGNALS:
     void devicesAdded( const DeviceTypeMap& devices );
     void devicesRemoved( const DeviceTypeMap& devices );
-
-  private Q_SLOTS:
-    void onInitialSearchCompleted();
-    void onDeviceDiscovered( Cagibi::RootDevice* rootDevice );
-    void onDeviceRemoved( Cagibi::RootDevice* rootDevice );
-
-  private:
-    bool shutsDownOnNoActivity() const;
-
-  private:
-    SSDPWatcher* mSsdpWatcher;
-    QTimer* mShutDownTimer;
-
-    int mShutDownTimeout;
 };
 
-inline bool UPnPProxy::shutsDownOnNoActivity() const { return mShutDownTimeout != 0; }
+
+inline DeviceList* DeviceListDBusAdaptor::parent() const { return static_cast<DeviceList*>( QObject::parent() ); }
 
 }
 

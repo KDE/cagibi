@@ -20,23 +20,18 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "upnpproxy.h"
+#include "devicelist.h"
 
 // program
-#include "upnpproxydbusadaptor.h"
 #include "ssdpwatcher.h"
 #include "rootdevice.h"
 #include "device.h"
 // Qt
 #include <QtCore/QTimer>
-#include <QtCore/QSettings>
-#include <QtCore/QDebug>
+
 
 namespace Cagibi
 {
-
-static const int defaultShutDownTimeout = CAGIBI_DAEMON_SHUTDOWN_SECS;
-static const int defaultSearchTimeout = CAGIBI_DAEMON_SEARCH_TIMEOUT_SECS;
 
 static void fillMap( DeviceTypeMap& map, const Device& device )
 {
@@ -77,32 +72,17 @@ static const Device* find( const Device& device, const QString& udn )
 }
 
 
-UPnPProxy::UPnPProxy( QObject* parent )
-  : QObject( parent ),
-    mSsdpWatcher( new SSDPWatcher(this) )
+DeviceList::DeviceList( int searchTimeout, int inactivityTimeout )
+  : QObject(),
+    mSsdpWatcher( new SSDPWatcher(this) ),
+    mShutDownTimeout( inactivityTimeout )
 {
-    QSettings::setPath( QSettings::NativeFormat, QSettings::SystemScope,
-                        QLatin1String(SYSCONF_INSTALL_DIR) );
-    QSettings settings( QSettings::SystemScope, QLatin1String("cagibid") );
-    mShutDownTimeout =
-        settings.value( QLatin1String("ShutDownTimeout"),
-                        defaultShutDownTimeout ).toInt();
-    const int searchTimeout =
-        settings.value( QLatin1String("SearchTimeout"),
-                        defaultSearchTimeout ).toInt();
-
     // setup timer to shutdown on no UPnP activity
     mShutDownTimer = new QTimer( this );
     mShutDownTimer->setInterval( mShutDownTimeout * 1000 ); // in msec
     mShutDownTimer->setSingleShot( true );
-    connect( mShutDownTimer, SIGNAL(timeout()), SLOT(shutDown()) );
-
-    // publish service on D-Bus
-    new UPnPProxyDBusAdaptor( this );
-
-    QDBusConnection dBusConnection = QDBusConnection::systemBus();
-    dBusConnection.registerService( QLatin1String("org.kde.Cagibi") );
-    dBusConnection.registerObject( QLatin1String("/org/kde/Cagibi/DeviceList"), this );
+    connect( mShutDownTimer, SIGNAL(timeout()),
+             this, SIGNAL(gotInactiv()) );
 
     // install listener to UPnP changes
     connect( mSsdpWatcher, SIGNAL(deviceDiscovered( Cagibi::RootDevice* )),
@@ -115,7 +95,7 @@ UPnPProxy::UPnPProxy( QObject* parent )
     mSsdpWatcher->startDiscover( searchTimeout );
 }
 
-DeviceTypeMap UPnPProxy::allDevices() const
+DeviceTypeMap DeviceList::allDevices() const
 {
     DeviceTypeMap result;
 
@@ -134,7 +114,7 @@ DeviceTypeMap UPnPProxy::allDevices() const
     return result;
 }
 
-DeviceTypeMap UPnPProxy::devicesByParent( const QString& udn ) const
+DeviceTypeMap DeviceList::devicesByParent( const QString& udn ) const
 {
     DeviceTypeMap result;
 
@@ -165,7 +145,7 @@ DeviceTypeMap UPnPProxy::devicesByParent( const QString& udn ) const
     return result;
 }
 
-DeviceTypeMap UPnPProxy::devicesByType( const QString& type ) const
+DeviceTypeMap DeviceList::devicesByType( const QString& type ) const
 {
     DeviceTypeMap result;
 
@@ -180,7 +160,7 @@ DeviceTypeMap UPnPProxy::devicesByType( const QString& type ) const
     return result;
 }
 
-Device UPnPProxy::deviceDetails( const QString& udn ) const
+Device DeviceList::deviceDetails( const QString& udn ) const
 {
     Device result;
 
@@ -201,18 +181,13 @@ Device UPnPProxy::deviceDetails( const QString& udn ) const
     return result;
 }
 
-void UPnPProxy::shutDown()
-{
-    qApp->quit();
-}
-
-void UPnPProxy::onInitialSearchCompleted()
+void DeviceList::onInitialSearchCompleted()
 {
     if( shutsDownOnNoActivity() && mSsdpWatcher->devicesCount() == 0 )
         mShutDownTimer->start();
 }
 
-void UPnPProxy::onDeviceDiscovered( RootDevice* rootDevice )
+void DeviceList::onDeviceDiscovered( RootDevice* rootDevice )
 {
     DeviceTypeMap devices;
 
@@ -224,7 +199,7 @@ void UPnPProxy::onDeviceDiscovered( RootDevice* rootDevice )
     emit devicesAdded( devices );
 }
 
-void UPnPProxy::onDeviceRemoved( RootDevice* rootDevice )
+void DeviceList::onDeviceRemoved( RootDevice* rootDevice )
 {
     DeviceTypeMap devices;
 
@@ -237,7 +212,7 @@ void UPnPProxy::onDeviceRemoved( RootDevice* rootDevice )
     emit devicesRemoved( devices );
 }
 
-UPnPProxy::~UPnPProxy()
+DeviceList::~DeviceList()
 {
     // simulate that all devices are removed
     const QList<RootDevice*> rootDevices = mSsdpWatcher->devices();

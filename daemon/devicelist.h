@@ -20,48 +20,64 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef UPNPPROXYDBUSADAPTOR_H
-#define UPNPPROXYDBUSADAPTOR_H
+#ifndef DEVICELIST_H
+#define DEVICELIST_H
 
-// program
-#include "upnpproxy.h"
-#include "dbuscodec.h"
 // Qt
-#include <QtDBus/QtDBus>
 #include <QtCore/QObject>
+#include <QtCore/QHash>
+#include <QtCore/QString>
+#include <QtCore/QMetaType>
+
+class QTimer;
+
+typedef QHash<QString,QString> DeviceTypeMap;
+Q_DECLARE_METATYPE( DeviceTypeMap )
 
 
 namespace Cagibi
 {
+class SSDPWatcher;
+class RootDevice;
+class Device;
 
-class UPnPProxyDBusAdaptor: public QDBusAbstractAdaptor
+
+class DeviceList : public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.kde.Cagibi.DeviceList")
 
   public:
-    explicit UPnPProxyDBusAdaptor( UPnPProxy* parent );
-
-    virtual ~UPnPProxyDBusAdaptor();
+    explicit DeviceList( int searchTimeout, int inactivityTimeout );
+    virtual ~DeviceList();
 
   public:
-    UPnPProxy* parent() const;
-
-  public Q_SLOTS:
     DeviceTypeMap allDevices() const;
     DeviceTypeMap devicesByParent( const QString& udn ) const;
     DeviceTypeMap devicesByType( const QString& type ) const;
-    Cagibi::Device deviceDetails( const QString& udn ) const;
-
-    void shutDown();
+    Device deviceDetails( const QString& udn ) const;
 
   Q_SIGNALS:
     void devicesAdded( const DeviceTypeMap& devices );
     void devicesRemoved( const DeviceTypeMap& devices );
+
+    void gotInactiv();
+
+  private Q_SLOTS:
+    void onInitialSearchCompleted();
+    void onDeviceDiscovered( Cagibi::RootDevice* rootDevice );
+    void onDeviceRemoved( Cagibi::RootDevice* rootDevice );
+
+  private:
+    bool shutsDownOnNoActivity() const;
+
+  private:
+    SSDPWatcher* mSsdpWatcher;
+    QTimer* mShutDownTimer;
+
+    int mShutDownTimeout;
 };
 
-
-inline UPnPProxy* UPnPProxyDBusAdaptor::parent() const { return static_cast<UPnPProxy*>( QObject::parent() ); }
+inline bool DeviceList::shutsDownOnNoActivity() const { return mShutDownTimeout != 0; }
 
 }
 

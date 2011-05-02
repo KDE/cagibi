@@ -1,7 +1,7 @@
 /*
     This file is part of the Cagibi daemon.
 
-    Copyright 2009,2011 Friedrich W. H. Kossebau <kossebau@kde.org>
+    Copyright 2011 Friedrich W. H. Kossebau <kossebau@kde.org>
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License as
@@ -20,15 +20,24 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// program
-#include "daemon.h"
+#ifndef DAEMON_H
+#define DAEMON_H
 
+// Qt
+#include <QtCore/QCoreApplication>
 
-int main( int argc, char* argv[] )
+namespace Cagibi
 {
-    Cagibi::Daemon daemon( argc, argv );
 
-    const int result = daemon.exec();
+class Daemon : public QCoreApplication
+{
+  public:
+    Daemon( int argc, char* argv[] );
 
-    return result;
+  public:
+    int exec();
+};
+
 }
+
+#endif
