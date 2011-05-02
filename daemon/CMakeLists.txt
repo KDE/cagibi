@@ -11,9 +11,14 @@ set( cagibid_SRCS
     device.cpp
     rootdevice.cpp
     ssdpwatcher.cpp
+
     devicelist.cpp
     devicelistdbusadaptor.cpp
     dbuscodec.cpp
+
+    control.cpp
+    controldbusadaptor.cpp
+
     daemon.cpp
     main.cpp
 )

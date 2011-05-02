@@ -23,6 +23,8 @@
 // program
 #include "devicelistdbusadaptor.h"
 #include "devicelist.h"
+#include "controldbusadaptor.h"
+#include "control.h"
 #include "daemon.h"
 // Qt
 #include <QtCore/QSettings>
@@ -62,6 +64,10 @@ int Daemon::exec()
     connect( &deviceList, SIGNAL(gotInactiv()), SLOT(quit()) );
     new DeviceListDBusAdaptor( &deviceList );
     dBusConnection.registerObject( QLatin1String("/org/kde/Cagibi/DeviceList"), &deviceList );
+
+    Control control( this );
+    new ControlDBusAdaptor( &control );
+    dBusConnection.registerObject( QLatin1String("/org/kde/Cagibi/Control"), &control );
 
     // do the mainloop
     const int result = QCoreApplication::exec();
