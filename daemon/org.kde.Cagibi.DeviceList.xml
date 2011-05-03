@@ -46,7 +46,19 @@
         <arg name="udn" type="s" direction="in"/>
         <arg type="a{ss}" direction="out">
             <tp:docstring>
-            Details of the device, passed in a StringStringMap
+            Details of the device, passed in a StringStringMap. Keys are:
+            deviceType,
+            friendlyName,
+            manufacturer,
+            modelDescription,
+            modelName,
+            modelNumber,
+            serialNumber,
+            UDN,
+            presentationURL,
+            ipAddress,
+            ipPortNumber,
+            parentDeviceUDN
             </tp:docstring>
         </arg>
     </method>
