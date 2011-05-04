@@ -29,3 +29,32 @@ are unfamiliar with it.
 There are currently two parameters you can overwrite on configuring,
 CAGIBI_DAEMON_SHUTDOWN_SECS and CAGIBI_DAEMON_SEARCH_TIMEOUT_SECS. Look into
 CMakeLists.txt in the toplevel dir for more information about these.
+
+
+Using
+-----
+The Cagibi daemon exposes two object in its D-Bus service org.kde.Cagibi:
+* /org/kde/Cagibi/DeviceList, with interface org.kde.Cagibi.DeviceList
+* /org/kde/Cagibi/Control, with interface org.kde.Cagibi.Control
+
+The first object does the actual caching of the UPnP device data. The second
+object is used to control the general behaviour of the daemon.
+
+Clients will query the DeviceList for the device data and also listen to its
+signals about new or disappeared devices. If the Cagibi daemon is shutdown, it
+will simply signal the disappearing of all known UPnP devices, even if they will
+stay for longer on the network.
+On a (not to be expected, but better prepared) crash of the daemon with an
+automatic restart by the init system (if integrated) or a manually done one it
+is up to the clients how to deal with that, the Cagibi daemon will just start as
+usual and search for UPnP devices starting of an empty list and emit
+signals for any it finds, even if already reported before the crash. A client
+would e.g. listen to the serviceOwnerChanged D-Bus signal and put all devices it
+uses to an unknown state if the service disappears from the D-Bus, then on
+reappearing of it compare all signaled-as-new devices to those with unknown
+state and after some timeout simply treat those still unknown as disappeared.
+In a more simple version the client would just treat all devices as disappeared
+if the Cagibi service is lost, but this could result in quite some unneeded
+activity even though the services (e.g. MediaServer) are still present and it's
+just a small drop-out of the discovery proxy.
+Having said that, so far Cagibi is not reported to crash at all :)
