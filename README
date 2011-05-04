@@ -20,3 +20,12 @@ about UPnP devices it is interested in.
 
 
 * http://en.wikipedia.org/wiki/Simple_Service_Discovery_Protocol
+
+
+Building
+--------
+The buildsystem is based on cmake, please read the cmake documentation if you
+are unfamiliar with it.
+There are currently two parameters you can overwrite on configuring,
+CAGIBI_DAEMON_SHUTDOWN_SECS and CAGIBI_DAEMON_SEARCH_TIMEOUT_SECS. Look into
+CMakeLists.txt in the toplevel dir for more information about these.
