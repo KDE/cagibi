@@ -1,10 +1,14 @@
-* look for good device details keys (like in UPnP spec?)
-* find a way to publish the keys used in the devicedetails lookup table
+For 0.2:
+* shutdown really needed in D-Bus api? usecase (besides development)?
 
-* If daemon crashes/gets killed, on restart it might emit devices again as new
-Should clients be aware of that?
-Could there be a log (devicesAddedToBeEmitted) so on restart current state for clients is known?
-But what if cleanup fails after emitting?
-Perhaps better to tell the clients "Got a problem, here is current list of known devices", again with signal (by finding a lock file or similar)
-
-* shutdown time should be configurable by config file
+For some future version:
+* add log file
+* react on available networks (e.g. proxy to NetworkManager)
+  or should init/serviced do this? how to broadcast just on new network?
+* proper behaviour on reconnection:
+  (is there a way to discover the network is the same? even with same subnetwork adress could be a different one, so needs to query again, unless there is a proper way)
+* browser tool which lists current cache
+* restrict the networks listened on
+* restrict the type of devices which is listened for (whitelist/blacklist)
+* option to reparse config while running? triggered on D-Bus? on setting file(s) touched?
+* add support for broadcasting, both dynamically as by installed files
