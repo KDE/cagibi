@@ -1,8 +1,13 @@
 0.2.0
+* split /org/kde/Cagibi object into DeviceList and Control objects
+* option to set search timeout
 * config file to adjust behaviour
 * option to shutdown on no UPnP activity
 * running on system D-Bus
 * deviceDetails as lookuptable, D-Bus signature a{ss}
+
+0.1.1
+* fixed: exec path in D-Bus service file missed subdir bin
 
 0.1.0
 * initial release
