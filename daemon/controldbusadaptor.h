@@ -44,7 +44,7 @@ class ControlDBusAdaptor: public QDBusAbstractAdaptor
     Control* parent() const;
 
   public Q_SLOTS:
-    void shutDown();
+    Q_NOREPLY void shutDown();
 };
 
 
