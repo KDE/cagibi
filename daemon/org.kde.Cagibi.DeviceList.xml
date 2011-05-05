@@ -12,6 +12,7 @@
             A list of the devices as pairs of first udn and second type.
             </tp:docstring>
         </arg>
+        <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QHash&lt;QString,QString&gt;" />
     </method>
 
     <method name="devicesByParent">
@@ -25,6 +26,7 @@
             A list of the devices as pairs of first udn and second type.
             </tp:docstring>
         </arg>
+        <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QHash&lt;QString,QString&gt;" />
     </method>
 
     <method name="devicesByType">
@@ -37,6 +39,7 @@
             A list of the devices as pairs of first udn and second type.
             </tp:docstring>
         </arg>
+        <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QHash&lt;QString,QString&gt;" />
     </method>
 
     <method name="deviceDetails">
@@ -61,6 +64,7 @@
             parentDeviceUDN
             </tp:docstring>
         </arg>
+        <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QHash&lt;QString,QString&gt;" />
     </method>
 
     <!-- SIGNALS -->
@@ -74,6 +78,7 @@
             A list of the devices as pairs of first udn and second type.
             </tp:docstring>
         </arg>
+        <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="QHash&lt;QString,QString&gt;" />
     </signal>
 
     <signal name="devicesRemoved">
@@ -85,6 +90,7 @@
             A list of the devices as pairs of first udn and second type.
             </tp:docstring>
         </arg>
+        <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="QHash&lt;QString,QString&gt;" />
     </signal>
 </interface>
 </node>
