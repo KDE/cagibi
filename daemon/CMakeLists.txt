@@ -43,3 +43,8 @@ set( cagibid_CONF ${CMAKE_CURRENT_BINARY_DIR}/${cagibid_CONF_NAME} )
 configure_file( ${cagibid_CONF_NAME}.cmake ${cagibid_CONF} )
 install( FILES ${cagibid_CONF}  DESTINATION ${SYSCONF_INSTALL_DIR} )
 
+set( cagibid_DBUS_API
+    org.kde.Cagibi.Control.xml
+    org.kde.Cagibi.DeviceList.xml
+)
+install( FILES ${cagibid_DBUS_API} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dbus-1/interfaces )
