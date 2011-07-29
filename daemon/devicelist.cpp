@@ -85,10 +85,10 @@ DeviceList::DeviceList( int searchTimeout, int inactivityTimeout )
              this, SIGNAL(gotInactiv()) );
 
     // install listener to UPnP changes
-    connect( mSsdpWatcher, SIGNAL(deviceDiscovered( Cagibi::RootDevice* )),
-             SLOT(onDeviceDiscovered( Cagibi::RootDevice* )) );
-    connect( mSsdpWatcher, SIGNAL(deviceRemoved( Cagibi::RootDevice* )),
-             SLOT(onDeviceRemoved( Cagibi::RootDevice* )) );
+    connect( mSsdpWatcher, SIGNAL(deviceDiscovered(Cagibi::RootDevice*)),
+             SLOT(onDeviceDiscovered(Cagibi::RootDevice*)) );
+    connect( mSsdpWatcher, SIGNAL(deviceRemoved(Cagibi::RootDevice*)),
+             SLOT(onDeviceRemoved(Cagibi::RootDevice*)) );
     connect( mSsdpWatcher, SIGNAL(initialSearchCompleted()),
              SLOT(onInitialSearchCompleted()) );
 

@@ -69,7 +69,7 @@ qDebug() << "Downloading service description from " << location;
     mError = QString();
 
 //     KIO::Job* job = KIO::storedGet( location, KIO::NoReload, KIO::Overwrite | KIO::HideProgressInfo );
-//     connect( job, SIGNAL(result( KJob* )), SLOT(onServiceDescriptionDownloadDone( KJob* )) );
+//     connect( job, SIGNAL(result(KJob*)), SLOT(onServiceDescriptionDownloadDone(KJob*)) );
 //     mServiceDownloadJob[job] = service;
 }
 #endif

@@ -95,8 +95,8 @@ SSDPWatcher::SSDPWatcher( QObject* parent )
 {
     connect( mUdpSocket, SIGNAL(readyRead()),
              SLOT(onUdpSocketReadyRead()) );
-    connect( mUdpSocket, SIGNAL(error( QAbstractSocket::SocketError )),
-             SLOT(onUdpSocketError( QAbstractSocket::SocketError )) );
+    connect( mUdpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
+             SLOT(onUdpSocketError(QAbstractSocket::SocketError)) );
 
     // try up to ten port numbers TODO: make configurable
     for( int i = 0; i < 10; ++i )
@@ -289,8 +289,8 @@ qDebug() << "Detected Device:" << server << "UUID" << uuid;
         // everything OK, make a new Device
         RootDevice* device = new RootDevice( server, location, uuid );
         device->resetCacheTimeOut( maxAge ); // TODO: might timeout before desciption done
-        connect( device, SIGNAL(deviceDescriptionDownloadDone( RootDevice*, bool )),
-                 SLOT(onDeviceDescriptionDownloadDone( RootDevice*, bool )) );
+        connect( device, SIGNAL(deviceDescriptionDownloadDone(RootDevice*,bool)),
+                 SLOT(onDeviceDescriptionDownloadDone(RootDevice*,bool)) );
 
         mPendingDevices.insert( device );
         device->startDeviceDescriptionDownload();
@@ -309,8 +309,8 @@ void SSDPWatcher::onDeviceDescriptionDownloadDone( RootDevice* device, bool succ
     else
     {
         mDevices.insert( device->uuid(), device );
-        connect( device, SIGNAL(cacheTimedOut( RootDevice* )),
-                 SLOT(onCacheTimedOut( RootDevice* )) );
+        connect( device, SIGNAL(cacheTimedOut(RootDevice*)),
+                 SLOT(onCacheTimedOut(RootDevice*)) );
 qDebug()<< "Added:"<<device->name()<<device->uuid();
         emit deviceDiscovered( device );
     }
