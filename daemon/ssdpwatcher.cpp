@@ -30,12 +30,16 @@
 #include <QtCore/QStringList>
 // C
 #include <unistd.h>
+
+#ifndef Q_WS_WIN
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#ifndef Q_WS_WIN
 #include <netinet/in_systm.h>
 #include <netinet/ip.h>
+#else
+#include <winsock2.h>
+#include <Ws2tcpip.h>
 #endif
 
 #include <QtCore/QDebug>
@@ -58,8 +62,12 @@ static void joinUPnPMCastGroup( int fd )
     ip_mreq mreq;
 
     memset( &mreq, 0, sizeof(ip_mreq) );
-
+#ifndef Q_WS_WIN
     inet_aton( SSDPBroadCastAddress, &mreq.imr_multiaddr );
+#else
+    mreq.imr_multiaddr.s_addr = inet_addr(SSDPBroadCastAddress);
+#endif
+    
     mreq.imr_interface.s_addr = htonl( INADDR_ANY );
 
 #ifndef Q_WS_WIN
@@ -76,7 +84,12 @@ static void leaveUPnPMCastGroup( int fd )
 
     memset( &mreq, 0, sizeof(ip_mreq) );
 
+#ifndef Q_WS_WIN
     inet_aton( SSDPBroadCastAddress, &mreq.imr_multiaddr );
+#else
+     mreq.imr_multiaddr.s_addr = inet_addr(SSDPBroadCastAddress);
+#endif
+     
     mreq.imr_interface.s_addr = htonl( INADDR_ANY );
 
 #ifndef Q_WS_WIN
