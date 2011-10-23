@@ -11,6 +11,13 @@ include(${QT_USE_FILE})
 
 find_package(Automoc4 REQUIRED)
 
+if (MSVC)
+    find_package(KDEWin REQUIRED)
+    include_directories(${KDEWIN_INCLUDES}/msvc)
+    link_libraries(${KDEWIN_LIBRARIES})
+endif (MSVC)
+
+
 set(CAGIBI_VERSION_MAJOR "0")
 set(CAGIBI_VERSION_MINOR "2")
 set(CAGIBI_VERSION_PATCH "0")
