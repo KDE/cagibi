@@ -32,6 +32,11 @@ target_link_libraries( cagibid
     ${QT_QTCORE_LIBRARY}
 )
 
+if(WIN32)
+    target_link_libraries( cagibid ${KDEWIN_LIBRARIES})
+endif(WIN32)
+
+
 install( TARGETS cagibid  RUNTIME DESTINATION bin )
 
 configure_file( org.kde.Cagibi.service.cmake ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Cagibi.service )
