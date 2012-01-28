@@ -29,6 +29,7 @@
 #include "device.h"
 // Qt
 #include <QtCore/QList>
+#include <QtCore/QString>
 #include <QtCore/QSharedData>
 
 
