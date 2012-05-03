@@ -75,7 +75,7 @@ class RootDevice : public QObject
 
     void cacheTimedOut( RootDevice* device );
 
-  protected: // QWidget API
+  protected: // QObject API
      virtual void timerEvent( QTimerEvent* event );
 
   protected Q_SLOTS:
