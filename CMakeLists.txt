@@ -1,6 +1,6 @@
+cmake_minimum_required(VERSION 2.8.9)
 project( Cagibi )
 
-cmake_minimum_required(VERSION 2.4.5 FATAL_ERROR)
 # CMP0005: keep escaping behaviour for definitions added via add_definitions()
 cmake_policy(SET CMP0005 OLD)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
