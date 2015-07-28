@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 2.8.9)
 project( Cagibi )
 
-# CMP0005: keep escaping behaviour for definitions added via add_definitions()
-cmake_policy(SET CMP0005 OLD)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 set(CMAKE_MODULE_PATH "${Cagibi_SOURCE_DIR}/cmake/modules")
 
@@ -51,7 +49,7 @@ add_definitions(
   -DCAGIBI_DAEMON_SYSTEMUSER=${CAGIBI_DAEMON_SYSTEMUSER}
   -DCAGIBI_DAEMON_SHUTDOWN_SECS=${CAGIBI_DAEMON_SHUTDOWN_SECS}
   -DCAGIBI_DAEMON_SEARCH_TIMEOUT_SECS=${CAGIBI_DAEMON_SEARCH_TIMEOUT_SECS}
-  -DSYSCONF_INSTALL_DIR=\\"${SYSCONF_INSTALL_DIR}\\"
+  -DSYSCONF_INSTALL_DIR="\\\"${SYSCONF_INSTALL_DIR}\\\""
 )
 
 add_subdirectory( daemon )
