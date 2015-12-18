@@ -40,7 +40,7 @@ endif(WIN32)
 install( TARGETS cagibid  RUNTIME DESTINATION bin )
 
 configure_file( org.kde.Cagibi.service.cmake ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Cagibi.service )
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Cagibi.service DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dbus-1/system-services )
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Cagibi.service DESTINATION ${SHARE_INSTALL_DIR}/dbus-1/system-services )
 
 configure_file( org.kde.Cagibi.conf.cmake ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Cagibi.conf )
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Cagibi.conf DESTINATION ${SYSCONF_INSTALL_DIR}/dbus-1/system.d/ )
@@ -54,4 +54,4 @@ set( cagibid_DBUS_API
     org.kde.Cagibi.Control.xml
     org.kde.Cagibi.DeviceList.xml
 )
-install( FILES ${cagibid_DBUS_API} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dbus-1/interfaces )
+install( FILES ${cagibid_DBUS_API} DESTINATION ${SHARE_INSTALL_DIR}/dbus-1/interfaces )

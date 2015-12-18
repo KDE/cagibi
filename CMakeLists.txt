@@ -32,6 +32,7 @@ else (NOT DEFINED SYSCONF_INSTALL_DIR)
   set(SYSCONF_INSTALL_DIR "${SYSCONF_INSTALL_DIR}" CACHE STRING "The sysconfig install dir")
 endif (NOT DEFINED SYSCONF_INSTALL_DIR)
 
+set(SHARE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/share" CACHE STRING "The share install dir")
 
 if (NOT DEFINED CAGIBI_DAEMON_SYSTEMUSER)
   set(CAGIBI_DAEMON_SYSTEMUSER "cagibi" CACHE STRING "System user which will be used to run the daemon")
